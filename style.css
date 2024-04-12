@@ -285,6 +285,14 @@ span.legend-icon {
   display: none !important;
 }
 
+/* 
+background color
+*/
+.leaflet-container {
+	background: #000;
+	outline-offset: 1px;
+	}
+
 .ladder form, .ladder div {
   display: block;
 }
