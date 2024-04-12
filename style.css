@@ -287,16 +287,16 @@ span.legend-icon {
 
 /* 
 background color
-
+*/
 .leaflet-container {
 	background: #000;
 	outline-offset: 1px;
 	}
-*/
+
 
 /* 
 background color
-*/
+
 .leaflet-container {
 	background: rgba(0,0,0,0);
 	outline-offset: 1px;
@@ -305,3 +305,4 @@ background color
 .ladder form, .ladder div {
   display: block;
 }
+*/
