@@ -70,7 +70,7 @@ $(window).on('load', function() {
     var layers = {};
 
     for (var i in points) {
-      var group = points[i].Group;
+      var group = points[i].Pins;
       if (group && groups.indexOf(group) === -1) {
         // Add group to groups
         groups.push(group);
