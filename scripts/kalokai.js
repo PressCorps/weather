@@ -114,19 +114,19 @@ $(window).on('load', function() {
 // line 113 might set icon size if there is none defined in GSheets
 
       
-      var anchor = [size[0] / 2, size[1]];
+ //     var anchor = [size[0] / 2, size[1]];
 
-      var icon = (point['Marker Icon'].indexOf('.') > 0)
-        ? L.icon({
-          iconUrl: point['Marker Icon'],
-          iconSize: size,
-          iconAnchor: anchor
-        })
-        : createMarkerIcon(point['Marker Icon'],
-          'fa',
-          point['Marker Color'].toLowerCase(),
-          point['Icon Color']
-        );
+//      var icon = (point['Marker Icon'].indexOf('.') > 0)
+//        ? L.icon({
+//          iconUrl: point['Marker Icon'],
+//          iconSize: size,
+//          iconAnchor: anchor
+//        })
+//        : createMarkerIcon(point['Marker Icon'],
+//          'fa',
+//          point['Marker Color'].toLowerCase(),
+//          point['Icon Color']
+//        );
       
       
       if (point.Latitude !== '' && point.Longitude !== '') {
