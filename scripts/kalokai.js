@@ -28,9 +28,9 @@ $(window).on('load', function() {
    * to specified (lat, lon) and zoom if all three are specified
    */
   function centerAndZoomMap(points) {
-    var lat = -79.038437;
-    var lon = 0.439453;
-    var zoom = 3, zoomSet = true;
+    var lat = map.getCenter().lat, latSet = false;
+    var lon = map.getCenter().lng, lonSet = false;
+    var zoom = 4, zoomSet = false;
     var center;
 
     if (getSetting('_initLat') !== '') {
