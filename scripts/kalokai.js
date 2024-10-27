@@ -120,7 +120,7 @@ $(window).on('load', function() {
         ? L.icon({
           iconUrl: point['Marker Icon'],
        //   iconSize: size,
-          iconAnchor: anchor
+      //    iconAnchor: anchor
         })
         : createMarkerIcon(point['Marker Icon'],
           'fa',
