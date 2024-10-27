@@ -107,10 +107,10 @@ $(window).on('load', function() {
 
       // If icon contains '.', assume it's a path to a custom icon,
       // otherwise create a Font Awesome icon
-      var iconSize = point['Custom Size'];
-      var size = (iconSize.indexOf('x') > 0)
-       ? [parseInt(iconSize.split('x')[0]), parseInt(iconSize.split('x')[1])]
-        : [210, 200]; // zoom level 5
+//      var iconSize = point['Custom Size'];
+  //    var size = (iconSize.indexOf('x') > 0)
+    //   ? [parseInt(iconSize.split('x')[0]), parseInt(iconSize.split('x')[1])]
+ //       : [210, 200];  zoom level 5
 // line 113 might set icon size if there is none defined in GSheets
 
       
@@ -944,7 +944,7 @@ $(window).on('load', function() {
     var basemap = trySetting('_tileProvider', 'CartoDB.Positron');
     
     //L.tileLayer.provider(basemap, {
-        L.tileLayer('media/map/{z}/{x}/{y}.jpg', {
+        L.tileLayer('https://foxholestats.com/tiles/worldmap_warapi.jpg-tiles/{z}_{x}_{y}.jpg', {
       maxZoom: 5,
       continuousWorld: false,
       noWrap: true,  
