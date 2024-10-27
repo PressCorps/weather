@@ -116,17 +116,17 @@ $(window).on('load', function() {
       
  //     var anchor = [size[0] / 2, size[1]];
 
-//      var icon = (point['Marker Icon'].indexOf('.') > 0)
-//        ? L.icon({
-//          iconUrl: point['Marker Icon'],
-//          iconSize: size,
-//          iconAnchor: anchor
-//        })
-//        : createMarkerIcon(point['Marker Icon'],
-//          'fa',
-//          point['Marker Color'].toLowerCase(),
-//          point['Icon Color']
-//        );
+      var icon = (point['Marker Icon'].indexOf('.') > 0)
+        ? L.icon({
+          iconUrl: point['Marker Icon'],
+          iconSize: size,
+          iconAnchor: anchor
+        })
+        : createMarkerIcon(point['Marker Icon'],
+          'fa',
+          point['Marker Color'].toLowerCase(),
+          point['Icon Color']
+        );
       
       
       if (point.Latitude !== '' && point.Longitude !== '') {
