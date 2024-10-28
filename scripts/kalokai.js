@@ -33,12 +33,14 @@ $(window).on('load', function() {
     var center;
 
     if (getSetting('_initLat') !== '') {
-      lat = getSetting('_initLat');
+      //lat = getSetting('_initLat');
+      lat = 0.439453;
       latSet = true;
     }
 
     if (getSetting('_initLon') !== '') {
-      lon = getSetting('_initLon');
+      //lon = getSetting('_initLon');
+      lon = -79.021712;
       lonSet = true;
     }
 
