@@ -1,4 +1,3 @@
-// line 113 set's zoom lvl
 $(window).on('load', function() {
   var documentSettings = {};
   var group2color = {};
@@ -30,7 +29,7 @@ $(window).on('load', function() {
   function centerAndZoomMap(points) {
     var lat = map.getCenter().lat, latSet = false;
     var lon = map.getCenter().lng, lonSet = false;
-    var zoom = 4, zoomSet = false;
+    var zoom = 12, zoomSet = false;
     var center;
 
     if (getSetting('_initLat') !== '') {
@@ -107,28 +106,25 @@ $(window).on('load', function() {
 
       // If icon contains '.', assume it's a path to a custom icon,
       // otherwise create a Font Awesome icon
-//      var iconSize = point['Custom Size'];
-  //    var size = (iconSize.indexOf('x') > 0)
-    //   ? [parseInt(iconSize.split('x')[0]), parseInt(iconSize.split('x')[1])]
- //       : [210, 200];  zoom level 5
-// line 113 might set icon size if there is none defined in GSheets
+      var iconSize = point['Custom Size'];
+      var size = (iconSize.indexOf('x') > 0)
+        ? [parseInt(iconSize.split('x')[0]), parseInt(iconSize.split('x')[1])]
+        : [32, 32];
 
-      
- //     var anchor = [size[0] / 2, size[1]];
+      var anchor = [size[0] / 2, size[1]];
 
       var icon = (point['Marker Icon'].indexOf('.') > 0)
         ? L.icon({
           iconUrl: point['Marker Icon'],
-       //   iconSize: size,
-      //    iconAnchor: anchor
+          iconSize: size,
+          iconAnchor: anchor
         })
         : createMarkerIcon(point['Marker Icon'],
           'fa',
           point['Marker Color'].toLowerCase(),
           point['Icon Color']
         );
-      
-      
+
       if (point.Latitude !== '' && point.Longitude !== '') {
         var marker = L.marker([point.Latitude, point.Longitude], {icon: icon})
           .bindPopup("<b>" + point['Name'] + '</b><br>' +
@@ -172,7 +168,6 @@ $(window).on('load', function() {
       var pointsLegend = L.control.layers(null, layers, {
         collapsed: true,
         position: pos,
-        sortLayers: true,
       });
 
       if (getSetting('_pointsLegendPos') !== 'off') {
@@ -690,7 +685,7 @@ $(window).on('load', function() {
     changeAttribution();
 
     // Append icons to categories in markers legend
-    $('#points-legend input+span').each(function(i) { // add to <span> that follows <input>
+    $('#points-legend label span').each(function(i) {
       var g = $(this).text().trim();
       var legendIcon = (group2color[ g ].indexOf('.') > 0)
         ? '<img src="' + group2color[ g ] + '" class="markers-legend-icon">'
@@ -701,7 +696,7 @@ $(window).on('load', function() {
     });
 
     // When all processing is done, hide the loader and make the map visible
-    showMap();
+     showMap();
 
     function showMap() {
       if (completePoints && completePolylines && completePolygons) {
@@ -747,7 +742,7 @@ $(window).on('load', function() {
       }
     }
 
-    // Add Google Analytics if the ID exists
+    // Add Google Analytics if the ID exists 
     var ga = getSetting('_googleAnalytics');
     console.log(ga)
     if ( ga && ga.length >= 10 ) {
@@ -788,9 +783,6 @@ $(window).on('load', function() {
    * Adds polylines to the map
    */
   function processPolylines(p) {
-
-    var lines = Array(p.length); // array to keep track of loaded geojson polylines
-
     if (!p || p.length == 0) return;
 
     var pos = (getSetting('_polylinesLegendPos') == 'off')
@@ -822,18 +814,19 @@ $(window).on('load', function() {
             }
           }
 
-          var line = L.polyline(latlng, {
+          line = L.polyline(latlng, {
             color: (p[index]['Color'] == '') ? 'grey' : p[index]['Color'],
             weight: trySetting('_polylinesWeight', 2),
             pane: 'shadowPane'
-          })
-          
-          lines[index] = line;
-          line.addTo(map);
+          }).addTo(map);
 
           if (p[index]['Description'] && p[index]['Description'] != '') {
             line.bindPopup(p[index]['Description']);
           }
+
+          polylinesLegend.addOverlay(line,
+            '<i class="color-line" style="background-color:' + p[index]['Color']
+            + '"></i> ' + p[index]['Display Name']);
 
           if (index == 0) {
             if (polylinesLegend._container) {
@@ -857,15 +850,8 @@ $(window).on('load', function() {
             }
           }
 
-          if ( lines.filter(Boolean).length == p.length ) { // only if all polylines loaded
+          if (p.length == index + 1) {
             completePolylines = true;
-
-            // Add polylines to the legend - we do this after all lines are loaded
-            for (let j = 0; j < p.length; j++) {
-              polylinesLegend.addOverlay(lines[j],
-                '<i class="color-line" style="background-color:' + p[j]['Color']
-                + '"></i> ' + p[j]['Display Name']);
-            }
           }
         };
       }(i));
@@ -942,14 +928,12 @@ $(window).on('load', function() {
   function addBaseMap() {
 
     var basemap = trySetting('_tileProvider', 'CartoDB.Positron');
-    
-    //L.tileLayer.provider(basemap, {
-        L.tileLayer('https://foxholestats.com/tiles/worldmap_warapi.jpg-tiles/{z}_{x}_{y}.jpg', {
+
+    // L.tileLayer.provider(basemap, {
+    L.tileLayer('https://foxholestats.com/tiles/worldmap_warapi.jpg-tiles/{z}_{x}_{y}.jpg', {
       maxZoom: 5,
       continuousWorld: false,
       noWrap: true,  
-    
-
       // Pass the api key to most commonly used parameters
       apiKey: trySetting('_tileProviderApiKey', ''),
       apikey: trySetting('_tileProviderApiKey', ''),
@@ -1121,7 +1105,8 @@ $(window).on('load', function() {
       var setting = settings[i];
       documentSettings[setting.Setting] = setting.Customize;
     }
-  }  
+  }
+
   /**
    * Reformulates polygonSettings as a dictionary, e.g.
    * {"webpageTitle": "Leaflet Boilerplate", "infoPopupText": "Stuff"}
@@ -1145,19 +1130,3 @@ $(window).on('load', function() {
   }
 
 });
-
-
-// custom zoom button
-
- const customButton = L.control({ position: 'topright' });
- customButton.onAdd = () => {
-    const buttonDiv = L.DomUtil.create('div', 'button-wrapper');
-
-    buttonDiv.innerHTML = `<a href="z4.html"><button>-</button></a>`;
-    
-    return buttonDiv;
-};
-customButton.addTo(map);
-
-
-      // end of custom button
