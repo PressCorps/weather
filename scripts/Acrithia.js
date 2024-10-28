@@ -32,18 +32,18 @@ $(window).on('load', function() {
     var zoom = 4, zoomSet = false;
     var center;
 
-    if (getSetting('_AcrithiaLat') !== '') {
-      lat = getSetting('_AcrithiaLat');
+    if (getSetting('_acrithiaLat') !== '') {
+      lat = getSetting('_acrithiaLat');
       latSet = true;
     }
 
-    if (getSetting('_AcrithiaLon') !== '') {
-      lon = getSetting('_AcrithiaLon');
+    if (getSetting('_acrithiaLon') !== '') {
+      lon = getSetting('_acrithiaLon');
       lonSet = true;
     }
 
-    if (getSetting('_AcrithiaZoom') !== '') {
-      zoom = parseInt(getSetting('_AcrithiaZoom'));
+    if (getSetting('_acrithiaZoom') !== '') {
+      zoom = parseInt(getSetting('_acrithiaZoom'));
       zoomSet = true;
     }
 
