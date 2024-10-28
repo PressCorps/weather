@@ -32,20 +32,18 @@ $(window).on('load', function() {
     var zoom = 4, zoomSet = false;
     var center;
 
-    if (getSetting('_initLat') !== '') {
-      //lat = getSetting('_initLat');
-      lat = 0.439453;
+    if (getSetting('_kalokaiLat') !== '') {
+      lat = getSetting('_kalokaiLat');
       latSet = true;
     }
 
-    if (getSetting('_initLon') !== '') {
-      //lon = getSetting('_initLon');
-      lon = -79.021712;
+    if (getSetting('_kalokaiLon') !== '') {
+      lon = getSetting('_kalokaiLon');
       lonSet = true;
     }
 
-    if (getSetting('_initZoom') !== '') {
-      zoom = parseInt(getSetting('_initZoom'));
+    if (getSetting('_kalokaiZoom') !== '') {
+      zoom = parseInt(getSetting('_kalokaiZoom'));
       zoomSet = true;
     }
 
