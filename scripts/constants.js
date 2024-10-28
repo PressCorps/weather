@@ -27,9 +27,9 @@ var constants = {
   _kalokaiZoom: 'Kalokai Zoom',
   _kalokaiLat: 'Kalokai Lat',
   _kalokaiLon: 'Kalokai Lon',
-  _acrithiaZoom: 'Kalokai Zoom',
-  _acrithiaLat: 'Kalokai Lat',
-  _acrithiaLon: 'Kalokai Lon',
+  _acrithiaZoom: 'Acrithia Zoom',
+  _acrithiaLat: 'Acrithia Lat',
+  _acrithiaLon: 'Acrithia Lon',
 	// Map Controls
 	_mapSearch: 'Search Button',
 	_mapSearchCircleRadius: 'Search Radius',
