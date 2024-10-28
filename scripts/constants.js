@@ -23,6 +23,10 @@ var constants = {
   _initZoom: 'Initial Zoom',
   _initLat: 'Initial Center Latitude',
   _initLon: 'Initial Center Longitude',
+// per hex settings
+  _kalokaiZoom: 'Kalokai Zoom',
+  _kalokaiLat: 'Kalokai Lat',
+  _kalokaiLon: 'Kalokai Lon',
 	// Map Controls
 	_mapSearch: 'Search Button',
 	_mapSearchCircleRadius: 'Search Radius',
