@@ -30,6 +30,9 @@ var constants = {
   _acrithiaZoom: 'Acrithia Zoom',
   _acrithiaLat: 'Acrithia Lat',
   _acrithiaLon: 'Acrithia Lon',
+  _redriverZoom: 'RedRiver Zoom',
+  _redriverLat: 'RedRiver Lat',
+  _redriverLon: 'RedRiver Lon',
 	// Map Controls
 	_mapSearch: 'Search Button',
 	_mapSearchCircleRadius: 'Search Radius',
