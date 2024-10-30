@@ -36,6 +36,9 @@ var constants = {
   _ashfieldsZoom: 'AshFields Zoom',
   _ashfieldsLat: 'AshFields Lat',
   _ashfieldsLon: 'AshFields Lon',
+  _greatmarchZoom: 'GreatMarch Zoom',
+  _greatmarchLat: 'GreatMarch Lat',
+  _greatmarchLon: 'GreatMarch Lon',
 	// Map Controls
 	_mapSearch: 'Search Button',
 	_mapSearchCircleRadius: 'Search Radius',
