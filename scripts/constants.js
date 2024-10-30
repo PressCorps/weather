@@ -33,6 +33,9 @@ var constants = {
   _redriverZoom: 'RedRiver Zoom',
   _redriverLat: 'RedRiver Lat',
   _redriverLon: 'RedRiver Lon',
+  _ashfieldsZoom: 'AshFields Zoom',
+  _ashfieldsLat: 'AshFields Lat',
+  _ashfieldsLon: 'AshFields Lon',
 	// Map Controls
 	_mapSearch: 'Search Button',
 	_mapSearchCircleRadius: 'Search Radius',
