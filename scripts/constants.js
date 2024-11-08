@@ -39,6 +39,9 @@ var constants = {
   _greatmarchZoom: 'GreatMarch Zoom',
   _greatmarchLat: 'GreatMarch Lat',
   _greatmarchLon: 'GreatMarch Lon',
+  _terminusZoom: 'Terminus Zoom',
+  _terminusLat: 'Terminus Lat',
+  _terminusLon: 'Terminus Lon',
 	// Map Controls
 	_mapSearch: 'Search Button',
 	_mapSearchCircleRadius: 'Search Radius',
