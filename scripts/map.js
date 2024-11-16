@@ -930,7 +930,7 @@ $(window).on('load', function() {
     var basemap = trySetting('_tileProvider', 'CartoDB.Positron');
 
     // L.tileLayer.provider(basemap, {
-    L.tileLayer('raw.githubusercontent.com/PressCorps/weather/refs/heads/main/media/map/{z}/{x}/{y}.png', {
+    L.tileLayer('https://raw.githubusercontent.com/PressCorps/weather/refs/heads/main/media/map/{z}/{x}/{y}.png', {
       maxZoom: 5,
       continuousWorld: false,
       noWrap: true,  
