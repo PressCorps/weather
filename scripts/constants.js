@@ -3,6 +3,7 @@ var constants = {
   notesSheetName: 'Notes',
 	optionsSheetName: 'Options',
 	pointsSheetName: 'Points',
+	streamSheetName: 'Stream Points',
   polygonsSheetName: 'Polygons',
   polylinesSheetName: 'Polylines',
   /* OPTIONS */
