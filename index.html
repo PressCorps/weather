@@ -37,6 +37,7 @@
             crs: L.CRS.Simple, // Keep Simple for flat game maps
             minZoom: 0,        // Adjust based on your available tile folders
             maxZoom: 5,        // Adjust based on your available tile folders
+            center: [0, 0],
             zoomSnap: 0.1,
             zoomDelta: 0.5
         });
@@ -45,7 +46,7 @@
         map.fitBounds(bounds);
 
         // --- TILE LAYER (The New Background) ---
-        // Assumes folder structure: media/map/zoom/x/y.png
+        // Assumes folder structure: media/map/zoom/x/y.webp
         const tileLayer = L.tileLayer('media/map/{z}/{x}/{y}.webp', {
             attribution: 'Map Data',
             noWrap: true,
@@ -74,10 +75,10 @@
         const overlayMaps = {
             "Subregions": subregions,
             "Weather Alerts": wxAlerts,
-            "🚀 Rockets": layers.ROCKET,
-            "☁️ Weather": layers.WEATHER,
-            "📅 Day Info": layers.DAY,
-            "🏷️ Regions": layers["REGION NAME"]
+            " Rockets": layers.ROCKET,
+            " Weather": layers.WEATHER,
+            " Day Info": layers.DAY,
+            " Regions": layers["REGION NAME"]
         };
 
         L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(map);
