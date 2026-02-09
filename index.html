@@ -56,6 +56,7 @@ const tileLayer = L.tileLayer('media/map/{z}/{x}/{y}.webp', { // Changed to .web
     attribution: 'Map Data',
     minZoom: 0,
     maxZoom: 5,
+    zoom: 0,
     noWrap: true,      // Stops Leaflet from looking for tiles at x: -1
     bounds: bounds,    // Limits tile requests to the [[-1, -1], [1, 1]] area
     tms: false         // Most game tiles use standard XYZ; if Y is inverted, set this to true
@@ -64,7 +65,7 @@ const tileLayer = L.tileLayer('media/map/{z}/{x}/{y}.webp', { // Changed to .web
         // --- OVERLAYS ---
         // Removed the static WorldMapControl.webp, kept the specific overlays
          // --- Background overlays from sheet ---
-    fetch("https://opensheet.elk.sh/1c49pLUImZ3ap5JEn5Ao3QpUrfFp3Y3NExcotr6w02ko/Map_Overlays")
+    fetch("https://opensheet.elk.sh/1nZR543Dekzy_7fpX6oUgXFnQD2WTOPCdngZ14i0GtFg/Map_Overlays")
       .then(res => res.json())
       .then(data => {
         data.forEach(row => {
