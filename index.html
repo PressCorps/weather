@@ -31,56 +31,27 @@
 
     
     <script>
- // --- Custom CRS ---
- //   const MyCRS = L.extend({}, L.CRS.Simple, { transformation: new L.Transformation(1, 1, -1, 1) });
-      const MyCRS = L.extend({}, L.CRS.Simple, { transformation: new L.Transformation(0, 0, 1, 1) });
+// --- Custom Foxhole CRS ---
+// Transformation(a, b, c, d) where:
+// x_map = a*x_data + b
+// y_map = c*y_data + d
+// We set 'c' to 1 (instead of -1) to make Y increase downwards.
+const MyCRS = L.extend({}, L.CRS.Simple, {
+    transformation: new L.Transformation(1, 0, 1, 0) 
+});
 
-    const map = L.map('map', {
-      crs: MyCRS,
-      center: [0, 0],
-      zoom: 9,
-      minZoom: 8.5,
-      maxZoom: 13
-    });
+const map = L.map('map', {
+    crs: MyCRS,
+    center: [0.5, 0.5], // Center of the 0,0 to 1,1 square
+    zoom: 9,
+    minZoom: 8,
+    maxZoom: 13
+});
 
-    const bounds = [[0, 0], [1, 1]];
+// Define the bounds where 0,0 is top-left and 1,1 is bottom-right
+const bounds = [[0, 0], [1, 1]];
 
-
-        // --- CONFIGURATION ---
-        // Bounds for the overlay images (Weather/Subregions)
-        // Ensure these match the area covered by your tiles
-        const dataUrl = 'https://opensheet.elk.sh/1nZR543Dekzy_7fpX6oUgXFnQD2WTOPCdngZ14i0GtFg/Points';
-
-
-// --- UPDATED TILE LAYER ---
-//const tileLayer = L.tileLayer('media/map/{z}/{x}/{y}.webp', { // Changed to .webp
-//    attribution: 'Map Data',
-//    minZoom: 0,
-//    maxZoom: 5,
-//    zoom: 0,
-//    noWrap: true,      // Stops Leaflet from looking for tiles at x: -1
-//    bounds: bounds,    // Limits tile requests to the [[-1, -1], [1, 1]] area
-//    tms: false         // Most game tiles use standard XYZ; if Y is inverted, set this to true
-//}).addTo(map);
-
-        // --- OVERLAYS ---
-        // Removed the static WorldMapControl.webp, kept the specific overlays
-         // --- Background overlays from sheet ---
-    fetch("https://opensheet.elk.sh/1nZR543Dekzy_7fpX6oUgXFnQD2WTOPCdngZ14i0GtFg/Map_Overlays")
-      .then(res => res.json())
-      .then(data => {
-        data.forEach(row => {
-          if (row.image_url) {
-            L.imageOverlay(row.image_url, bounds).addTo(map);
-          }
-        });
-        map.fitBounds(bounds);
-      });
-//        const subregions = L.imageOverlay('media/SUBREGIONS.png', bounds);
-//        const wxAlerts = L.imageOverlay('https://raw.githubusercontent.com/PressCorps/API/refs/heads/main/wx%20alerts/wx%20alert.png', bounds).addTo(map);
-
-// --- MARKER GROUPS ---
-// These act as the "toggles" in your filter menu
+// --- MARKER GROUPS (Filter Toggles) ---
 const layers = {
     "Rockets": L.layerGroup().addTo(map),
     "Weather": L.layerGroup().addTo(map),
@@ -89,24 +60,24 @@ const layers = {
     "Other": L.layerGroup().addTo(map)
 };
 
-// --- LAYER CONTROL (The Filter Menu) ---
-// This creates the UI in the top-right corner to turn groups on/off
 L.control.layers(null, layers, { collapsed: false }).addTo(map);
 
-// --- DATA FETCHING & FILTERING ---
+const dataUrl = 'https://opensheet.elk.sh/1nZR543Dekzy_7fpX6oUgXFnQD2WTOPCdngZ14i0GtFg/Points';
+
 function loadMarkers() {
     fetch(dataUrl)
         .then(res => res.json())
         .then(data => {
             data.forEach(row => {
-                const lat = parseFloat(row.Latitude);
+                // In Foxhole JSON: Latitude is usually Y, Longitude is usually X
+                const lat = parseFloat(row.Latitude); 
                 const lng = parseFloat(row.Longitude);
 
-                // Validation: Skip if coordinates are missing or zero
-                if (isNaN(lat) || isNaN(lng) || (lat === 0 && lng === 0)) return;
+                // Validation
+                if (isNaN(lat) || isNaN(lng)) return;
 
-                // 1. Handle Custom Icon Size
-                let iconSize = [32, 32]; 
+                // Handle Sizing
+                let iconSize = [32, 32];
                 if (row["Custom Size"] && row["Custom Size"].includes('x')) {
                     iconSize = row["Custom Size"].split('x').map(Number);
                 }
@@ -114,42 +85,42 @@ function loadMarkers() {
                 const customIcon = L.icon({
                     iconUrl: row["Marker Icon"] || "https://unpkg.com/leaflet/dist/images/marker-icon.png",
                     iconSize: iconSize,
-                    iconAnchor: [iconSize[0] / 2, iconSize[1] / 2], // Center alignment
+                    iconAnchor: [iconSize[0] / 2, iconSize[1] / 2],
                     popupAnchor: [0, -iconSize[1] / 2]
                 });
 
-                // 2. Build Popup
                 const popupContent = `
                     <div class="popup-header">${row.Name || "Unnamed"}</div>
-                    <div class="popup-data">${row.Description || "No description available."}</div>
-                    <div style="font-size: 0.75em; color: #888; margin-top: 8px; border-top: 1px solid #444; pt-2">
-                        ${row.UPDATE || ""}
-                    </div>
+                    <div class="popup-data">${row.Description || "No description."}</div>
+                    <div style="font-size: 0.7em; color: #888; margin-top: 5px;">${row.UPDATE || ""}</div>
                 `;
 
-                // 3. Create Marker
-                const m = L.marker([lat, lng], { icon: customIcon })
-                           .bindPopup(popupContent);
+                // Add marker: [Y, X] in Leaflet matches [Latitude, Longitude]
+                const m = L.marker([lat, lng], { icon: customIcon }).bindPopup(popupContent);
 
-                // 4. Filter Logic: Add to the correct toggle group
+                // Group Logic
                 const group = row.Group ? row.Group.toUpperCase() : "";
-                
-                if (group === "ROCKET") {
-                    layers["Rockets"].addLayer(m);
-                } else if (group === "WEATHER") {
-                    layers["Weather"].addLayer(m);
-                } else if (group === "DAY") {
-                    layers["Day Info"].addLayer(m);
-                } else if (group === "REGION NAME") {
-                    layers["Regions"].addLayer(m);
-                } else {
-                    layers["Other"].addLayer(m);
-                }
+                if (group === "ROCKET") layers["Rockets"].addLayer(m);
+                else if (group === "WEATHER") layers["Weather"].addLayer(m);
+                else if (group === "DAY") layers["Day Info"].addLayer(m);
+                else if (group === "REGION NAME") layers["Regions"].addLayer(m);
+                else layers["Other"].addLayer(m);
             });
         });
 }
 
-loadMarkers();
+// Load Overlays (Ensure images also use the 0,0 to 1,1 bounds)
+fetch("https://opensheet.elk.sh/1nZR543Dekzy_7fpX6oUgXFnQD2WTOPCdngZ14i0GtFg/Map_Overlays")
+    .then(res => res.json())
+    .then(data => {
+        data.forEach(row => {
+            if (row.image_url) {
+                L.imageOverlay(row.image_url, bounds).addTo(map);
+            }
+        });
+        map.fitBounds(bounds);
+        loadMarkers(); // Load markers after map bounds are set
+    });
 
             
         
