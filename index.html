@@ -78,35 +78,22 @@
 //        const subregions = L.imageOverlay('media/SUBREGIONS.png', bounds);
 //        const wxAlerts = L.imageOverlay('https://raw.githubusercontent.com/PressCorps/API/refs/heads/main/wx%20alerts/wx%20alert.png', bounds).addTo(map);
 
-        // --- MARKER GROUPS ---
-        const layers = {
-            ROCKET: L.layerGroup().addTo(map),
-            WEATHER: L.layerGroup().addTo(map),
-            DAY: L.layerGroup().addTo(map),
-            "REGION NAME": L.layerGroup().addTo(map),
-            OTHER: L.layerGroup()
-        };
+// --- MARKER GROUPS ---
+// These act as the "toggles" in your filter menu
+const layers = {
+    "Rockets": L.layerGroup().addTo(map),
+    "Weather": L.layerGroup().addTo(map),
+    "Day Info": L.layerGroup().addTo(map),
+    "Regions": L.layerGroup().addTo(map),
+    "Other": L.layerGroup().addTo(map)
+};
 
-        // --- LAYER CONTROL ---
- //       const baseMaps = { 
- //           "Base Tiles": tileLayer 
- //       };
-        
-        const overlayMaps = {
-        //    "Subregions": subregions,
-        //    "Weather Alerts": wxAlerts,
-            " Rockets": layers.ROCKET,
-            " Weather": layers.WEATHER,
-            " Day Info": layers.DAY,
-            " Regions": layers["REGION NAME"]
-        };
+// --- LAYER CONTROL (The Filter Menu) ---
+// This creates the UI in the top-right corner to turn groups on/off
+L.control.layers(null, layers, { collapsed: false }).addTo(map);
 
-        L.control.layers(overlayMaps, { collapsed: false }).addTo(map);
-
-        // --- DATA FETCHING ---
-  // Replace your existing loadMarkers function and any calls to it with this:
-
-function initMarkers() {
+// --- DATA FETCHING & FILTERING ---
+function loadMarkers() {
     fetch(dataUrl)
         .then(res => res.json())
         .then(data => {
@@ -114,51 +101,53 @@ function initMarkers() {
                 const lat = parseFloat(row.Latitude);
                 const lng = parseFloat(row.Longitude);
 
-                // Skip if coordinates are 0,0 or invalid (unless 0,0 is intended)
+                // Validation: Skip if coordinates are missing or zero
                 if (isNaN(lat) || isNaN(lng) || (lat === 0 && lng === 0)) return;
 
-                // Handle Custom Size (e.g., "50x30")
-                let iconSize = [32, 32]; // Default
+                // 1. Handle Custom Icon Size
+                let iconSize = [32, 32]; 
                 if (row["Custom Size"] && row["Custom Size"].includes('x')) {
                     iconSize = row["Custom Size"].split('x').map(Number);
                 }
 
-                // Create the Icon
                 const customIcon = L.icon({
                     iconUrl: row["Marker Icon"] || "https://unpkg.com/leaflet/dist/images/marker-icon.png",
                     iconSize: iconSize,
-                    iconAnchor: [iconSize[0] / 2, iconSize[1]], // Anchor at bottom center
-                    popupAnchor: [0, -iconSize[1]]
+                    iconAnchor: [iconSize[0] / 2, iconSize[1] / 2], // Center alignment
+                    popupAnchor: [0, -iconSize[1] / 2]
                 });
 
-                // Build Popup Content
+                // 2. Build Popup
                 const popupContent = `
                     <div class="popup-header">${row.Name || "Unnamed"}</div>
-                    <div class="popup-data">${row.Description || "No description provided."}</div>
+                    <div class="popup-data">${row.Description || ""}</div>
                     ${row["Wx Submit Link"] ? `<a class="popup-link" href="${row["Wx Submit Link"]}" target="_blank">Submit Update</a>` : ''}
-                    <div style="font-size: 0.7em; color: #888; margin-top: 5px;">${row.UPDATE || ""}</div>
                 `;
 
-                // Create Marker
-                const m = L.marker([lat, lng], {
-                    icon: customIcon,
-                    title: row.Name
-                }).bindPopup(popupContent);
+                // 3. Create Marker
+                const m = L.marker([lat, lng], { icon: customIcon })
+                           .bindPopup(popupContent);
 
-                // Add to the appropriate Layer Group
-                const groupName = row.Group ? row.Group.toUpperCase() : "OTHER";
-                if (layers[groupName]) {
-                    layers[groupName].addLayer(m);
+                // 4. Filter Logic: Add to the correct toggle group
+                const group = row.Group ? row.Group.toUpperCase() : "";
+                
+                if (group === "ROCKET") {
+                    layers["Rockets"].addLayer(m);
+                } else if (group === "WEATHER") {
+                    layers["Weather"].addLayer(m);
+                } else if (group === "DAY") {
+                    layers["Day Info"].addLayer(m);
+                } else if (group === "REGION NAME") {
+                    layers["Regions"].addLayer(m);
                 } else {
-                    layers.OTHER.addLayer(m);
+                    layers["Other"].addLayer(m);
                 }
             });
-        })
-        .catch(err => console.error("Error loading markers:", err));
+        });
 }
 
-// Call the function
-initMarkers();
+loadMarkers();
+
             
         
     </script>
