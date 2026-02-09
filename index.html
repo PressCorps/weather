@@ -104,30 +104,61 @@
         L.control.layers(overlayMaps, { collapsed: false }).addTo(map);
 
         // --- DATA FETCHING ---
-  function loadMarkers(sheetURL, clusterLayer) {
-      fetch(sheetURL)
+  // Replace your existing loadMarkers function and any calls to it with this:
+
+function initMarkers() {
+    fetch(dataUrl)
         .then(res => res.json())
         .then(data => {
-          data.forEach(row => {
-            const x = parseFloat(row.x);
-            const y = parseFloat(row.y);
-            if (isNaN(x) || isNaN(y)) return;
+            data.forEach(row => {
+                const lat = parseFloat(row.Latitude);
+                const lng = parseFloat(row.Longitude);
 
-            const m = L.marker([y, x], {
-              icon: L.icon({
-                iconUrl: row.icon_url || "https://unpkg.com/leaflet/dist/images/marker-icon.png",
-                iconSize: [42, 42],
-                iconAnchor: [16, 32],
-                popupAnchor: [0, -28]
-              }),
-              title: row.name || "Unnamed"
-            }).bindPopup(`<b>${row.name || "Unnamed"}</b><br>${row.description || ""}`);
+                // Skip if coordinates are 0,0 or invalid (unless 0,0 is intended)
+                if (isNaN(lat) || isNaN(lng) || (lat === 0 && lng === 0)) return;
 
-            allMarkers.push(m);
-            clusterLayer.addLayer(m);
-          });
-        });
-    }
+                // Handle Custom Size (e.g., "50x30")
+                let iconSize = [32, 32]; // Default
+                if (row["Custom Size"] && row["Custom Size"].includes('x')) {
+                    iconSize = row["Custom Size"].split('x').map(Number);
+                }
+
+                // Create the Icon
+                const customIcon = L.icon({
+                    iconUrl: row["Marker Icon"] || "https://unpkg.com/leaflet/dist/images/marker-icon.png",
+                    iconSize: iconSize,
+                    iconAnchor: [iconSize[0] / 2, iconSize[1]], // Anchor at bottom center
+                    popupAnchor: [0, -iconSize[1]]
+                });
+
+                // Build Popup Content
+                const popupContent = `
+                    <div class="popup-header">${row.Name || "Unnamed"}</div>
+                    <div class="popup-data">${row.Description || "No description provided."}</div>
+                    ${row["Wx Submit Link"] ? `<a class="popup-link" href="${row["Wx Submit Link"]}" target="_blank">Submit Update</a>` : ''}
+                    <div style="font-size: 0.7em; color: #888; margin-top: 5px;">${row.UPDATE || ""}</div>
+                `;
+
+                // Create Marker
+                const m = L.marker([lat, lng], {
+                    icon: customIcon,
+                    title: row.Name
+                }).bindPopup(popupContent);
+
+                // Add to the appropriate Layer Group
+                const groupName = row.Group ? row.Group.toUpperCase() : "OTHER";
+                if (layers[groupName]) {
+                    layers[groupName].addLayer(m);
+                } else {
+                    layers.OTHER.addLayer(m);
+                }
+            });
+        })
+        .catch(err => console.error("Error loading markers:", err));
+}
+
+// Call the function
+initMarkers();
             
         
     </script>
