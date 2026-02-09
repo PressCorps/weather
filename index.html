@@ -32,7 +32,8 @@
     
     <script>
  // --- Custom CRS ---
-    const MyCRS = L.extend({}, L.CRS.Simple, { transformation: new L.Transformation(1, 1, -1, 1) });
+ //   const MyCRS = L.extend({}, L.CRS.Simple, { transformation: new L.Transformation(1, 1, -1, 1) });
+      const MyCRS = L.extend({}, L.CRS.Simple, { transformation: new L.Transformation(0, 0, 1, 1) });
 
     const map = L.map('map', {
       crs: MyCRS,
@@ -42,7 +43,7 @@
       maxZoom: 13
     });
 
-    const bounds = [[-1, -1], [1, 1]];
+    const bounds = [[0, 0], [1, 1]];
 
 
         // --- CONFIGURATION ---
