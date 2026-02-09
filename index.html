@@ -38,8 +38,8 @@
       crs: MyCRS,
       center: [0, 0],
       zoom: 9,
-      minZoom: 0,
-      maxZoom: 5
+      minZoom: 8.5,
+      maxZoom: 13
     });
 
     const bounds = [[-1, -1], [1, 1]];
@@ -52,15 +52,15 @@
 
 
 // --- UPDATED TILE LAYER ---
-const tileLayer = L.tileLayer('media/map/{z}/{x}/{y}.webp', { // Changed to .webp
-    attribution: 'Map Data',
-    minZoom: 0,
-    maxZoom: 5,
-    zoom: 0,
-    noWrap: true,      // Stops Leaflet from looking for tiles at x: -1
-    bounds: bounds,    // Limits tile requests to the [[-1, -1], [1, 1]] area
-    tms: false         // Most game tiles use standard XYZ; if Y is inverted, set this to true
-}).addTo(map);
+//const tileLayer = L.tileLayer('media/map/{z}/{x}/{y}.webp', { // Changed to .webp
+//    attribution: 'Map Data',
+//    minZoom: 0,
+//    maxZoom: 5,
+//    zoom: 0,
+//    noWrap: true,      // Stops Leaflet from looking for tiles at x: -1
+//    bounds: bounds,    // Limits tile requests to the [[-1, -1], [1, 1]] area
+//    tms: false         // Most game tiles use standard XYZ; if Y is inverted, set this to true
+//}).addTo(map);
 
         // --- OVERLAYS ---
         // Removed the static WorldMapControl.webp, kept the specific overlays
@@ -93,8 +93,8 @@ const tileLayer = L.tileLayer('media/map/{z}/{x}/{y}.webp', { // Changed to .web
         };
         
         const overlayMaps = {
-            "Subregions": subregions,
-            "Weather Alerts": wxAlerts,
+        //    "Subregions": subregions,
+        //    "Weather Alerts": wxAlerts,
             " Rockets": layers.ROCKET,
             " Weather": layers.WEATHER,
             " Day Info": layers.DAY,
