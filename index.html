@@ -88,9 +88,9 @@
         };
 
         // --- LAYER CONTROL ---
-        const baseMaps = { 
-            "Base Tiles": tileLayer 
-        };
+ //       const baseMaps = { 
+ //           "Base Tiles": tileLayer 
+ //       };
         
         const overlayMaps = {
         //    "Subregions": subregions,
@@ -101,54 +101,33 @@
             " Regions": layers["REGION NAME"]
         };
 
-        L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(map);
+        L.control.layers(overlayMaps, { collapsed: false }).addTo(map);
 
         // --- DATA FETCHING ---
-        fetch(dataUrl)
-            .then(r => r.json())
-            .then(data => {
-                data.forEach(point => {
-                    addMarker(point);
-                });
-            })
-            .catch(e => console.error("Data Load Error:", e));
+  function loadMarkers(sheetURL, clusterLayer) {
+      fetch(sheetURL)
+        .then(res => res.json())
+        .then(data => {
+          data.forEach(row => {
+            const x = parseFloat(row.x);
+            const y = parseFloat(row.y);
+            if (isNaN(x) || isNaN(y)) return;
 
-        // --- MARKER LOGIC ---
-        function addMarker(data) {
-            if (!data.Latitude || !data.Longitude) return;
+            const m = L.marker([y, x], {
+              icon: L.icon({
+                iconUrl: row.icon_url || "https://unpkg.com/leaflet/dist/images/marker-icon.png",
+                iconSize: [42, 42],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -28]
+              }),
+              title: row.name || "Unnamed"
+            }).bindPopup(`<b>${row.name || "Unnamed"}</b><br>${row.description || ""}`);
 
-            const lat = parseFloat(data.Latitude);
-            const lng = parseFloat(data.Longitude);
-            
-            let iconUrl = data["Marker Icon"] || 'media/blank.png';
-            if(iconUrl === "") iconUrl = 'media/blank.png';
-
-            let iconSize = [32, 32]; 
-            if(data["Custom Size"] && data["Custom Size"].includes('x')) {
-                iconSize = data["Custom Size"].split('x').map(Number);
-            }
-
-            const customIcon = L.icon({
-                iconUrl: iconUrl,
-                iconSize: iconSize,
-                iconAnchor: [iconSize[0]/2, iconSize[1]/2],
-                popupAnchor: [0, -iconSize[1]/2]
-            });
-
-            const content = `
-                <div class="popup-header">${data.Name || 'Unknown Point'}</div>
-                <div class="popup-data">${data.UPDATE || ''}</div>
-                <div class="popup-data">${data.Description || ''}</div>
-                ${data["Wx Submit Link"] ? `<a href="${data["Wx Submit Link"]}" target="_blank" class="popup-link">Submit Data Update</a>` : ''}
-            `;
-
-            const marker = L.marker([lat, lng], { icon: customIcon }).bindPopup(content);
-
-            let groupKey = data.Group ? data.Group.toUpperCase().trim() : "OTHER";
-            if (layers[groupKey]) {
-                layers[groupKey].addLayer(marker);
-            } else {
-                layers.OTHER.addLayer(marker);
+            allMarkers.push(m);
+            clusterLayer.addLayer(m);
+          });
+        });
+    }
             }
         }
     </script>
