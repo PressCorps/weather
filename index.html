@@ -120,8 +120,10 @@ function loadMarkers() {
                 // 2. Build Popup
                 const popupContent = `
                     <div class="popup-header">${row.Name || "Unnamed"}</div>
-                    <div class="popup-data">${row.Description || ""}</div>
-                    ${row["Wx Submit Link"] ? `<a class="popup-link" href="${row["Wx Submit Link"]}" target="_blank">Submit Update</a>` : ''}
+                    <div class="popup-data">${row.Description || "No description available."}</div>
+                    <div style="font-size: 0.75em; color: #888; margin-top: 8px; border-top: 1px solid #444; pt-2">
+                        ${row.UPDATE || ""}
+                    </div>
                 `;
 
                 // 3. Create Marker
