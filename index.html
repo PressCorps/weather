@@ -38,7 +38,27 @@
         const gridIntervalWidth = 768;
         const gridIntervalHeight = 444;
 
-        // --- FULL LOCAL INDEX (FoxholeStats Grid Mapping) ---
+        const scale = 256 / Math.max(pixelWorldWidth, pixelWorldHeight);
+        const offset = Math.abs(pixelWorldWidth - pixelWorldHeight) / 2;
+
+        // Calculate world bounds for the map and images
+        const bottomRightLeaflet = L.latLng(
+            (pixelWorldHeight + (pixelWorldWidth > pixelWorldHeight ? offset : 0)) * scale * -1,
+            (pixelWorldWidth + (pixelWorldHeight > pixelWorldWidth ? offset : 0)) * scale
+        );
+        const worldBounds = [[0, 0], [bottomRightLeaflet.lat, bottomRightLeaflet.lng]];
+
+        // --- MAP INIT ---
+        const map = L.map('map', {
+            crs: L.CRS.Simple,
+            maxBounds: worldBounds,
+            center: [bottomRightLeaflet.lat / 2, bottomRightLeaflet.lng / 2], 
+            zoom: 3,
+            minZoom: 2,
+            maxZoom: 8
+        });
+
+        // --- FULL LOCAL INDEX ---
         const localIndex = {
             "Allods Bight": { x: 8, y: 8 }, "Callahans Passage": { x: 6, y: 4 }, "Deadlands": { x: 6, y: 6 },
             "The Drowned Vale": { x: 7, y: 7 }, "Endless Shore": { x: 9, y: 7 }, "Farranac Coast": { x: 3, y: 5 },
@@ -68,9 +88,6 @@
 
             const worldX = (gridIntervalWidth * region.x) + (mapWidth * localX);
             const worldY = (gridIntervalHeight * region.y) + (mapHeight * localY);
-
-            const scale = 256 / Math.max(pixelWorldWidth, pixelWorldHeight);
-            const offset = Math.abs(pixelWorldWidth - pixelWorldHeight) / 2;
             
             let finalX = worldX;
             let finalY = worldY;
@@ -80,15 +97,6 @@
 
             return L.latLng(finalY * scale * -1, finalX * scale);
         }
-
-        // --- MAP INIT ---
-        const map = L.map('map', {
-            crs: L.CRS.Simple,
-            center: [-80, 120], 
-            zoom: 3,
-            minZoom: 2,
-            maxZoom: 8
-        });
 
         const layers = {
             "Rockets": L.layerGroup().addTo(map),
@@ -100,10 +108,8 @@
 
         L.control.layers(null, layers, { collapsed: false }).addTo(map);
 
-        const dataUrl = 'https://opensheet.elk.sh/1nZR543Dekzy_7fpX6oUgXFnQD2WTOPCdngZ14i0GtFg/Points';
-
-        // --- LOAD DATA ---
-        fetch(dataUrl)
+        // --- LOAD MARKER DATA ---
+        fetch('https://opensheet.elk.sh/1nZR543Dekzy_7fpX6oUgXFnQD2WTOPCdngZ14i0GtFg/Points')
             .then(res => res.json())
             .then(data => {
                 data.forEach(row => {
@@ -116,7 +122,6 @@
                     const coords = projectToLeaflet(region, lX, lY);
                     if (!coords) return;
 
-                    // Icon setup
                     let size = [32, 32];
                     if (row["Custom Size"] && row["Custom Size"].includes('x')) {
                         size = row["Custom Size"].split('x').map(Number);
@@ -128,7 +133,6 @@
                         iconAnchor: [size[0] / 2, size[1] / 2]
                     });
 
-                    // Popup Build
                     const content = `
                         <div class="popup-header">${row.Name || "Unknown"}</div>
                         <div class="popup-data">${row.Description || ""}</div>
@@ -137,7 +141,6 @@
 
                     const m = L.marker(coords, { icon: icon }).bindPopup(content);
 
-                    // Layer Sort
                     const g = (row.Group || "").toUpperCase();
                     if (g.includes("ROCKET")) layers["Rockets"].addLayer(m);
                     else if (g.includes("WEATHER")) layers["Weather"].addLayer(m);
@@ -147,17 +150,18 @@
                 });
             });
 
-        // Load Background Overlays
+        // --- LOAD BACKGROUND OVERLAYS ---
         fetch("https://opensheet.elk.sh/1nZR543Dekzy_7fpX6oUgXFnQD2WTOPCdngZ14i0GtFg/Map_Overlays")
             .then(res => res.json())
             .then(data => {
                 data.forEach(row => {
                     if (row.image_url) {
-                        // Using a large arbitrary bound for the background images
-                        L.imageOverlay(row.image_url, [[0, 0], [-200, 250]]).addTo(map);
+                        L.imageOverlay(row.image_url, worldBounds).addTo(map);
                     }
                 });
+                map.fitBounds(worldBounds);
             });
+
     </script>
 </body>
 </html>
