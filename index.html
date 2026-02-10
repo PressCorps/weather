@@ -10,70 +10,67 @@
     <style>
         body { margin: 0; padding: 0; background-color: #222; font-family: sans-serif; }
         #map { height: 100vh; width: 100vw; background: #1a1a1a; }
-        /* Coordinate Helper HUD */
-#coord-hud {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    z-index: 1000;
-    background: rgba(43, 43, 43, 0.9);
-    color: #ff9f43;
-    padding: 10px;
-    border: 1px solid #444;
-    border-radius: 4px;
-    font-family: monospace;
-    pointer-events: none; /* Let clicks pass through to the map */
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
-}
         
-        /* Dark Theme Popup */
+        /* Coordinate Helper HUD */
+        #coord-hud {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(43, 43, 43, 0.9);
+            color: #ff9f43;
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 4px;
+            font-family: monospace;
+            pointer-events: none;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        
         .leaflet-popup-content-wrapper { background: #2b2b2b; color: #eee; border: 1px solid #444; border-radius: 4px; }
         .leaflet-popup-tip { background: #2b2b2b; }
         .popup-header { font-size: 1.1em; font-weight: bold; color: #ff9f43; margin-bottom: 5px; border-bottom: 1px solid #444; padding-bottom: 3px; }
         .popup-data { margin: 8px 0; font-size: 0.9em; line-height: 1.4; color: #ccc; }
         .popup-footer { font-size: 0.7em; color: #777; margin-top: 10px; font-style: italic; }
 
-        /* Dark Theme Layer Control */
-        .leaflet-control-layers { background: #2b2b2b !important; color: #eee !important; border: none !important; padding: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
-        .leaflet-control-layers-overlays label { margin-bottom: 5px; cursor: pointer; }
+        .leaflet-control-layers { background: #2b2b2b !important; color: #eee !important; border: none !important; padding: 10px; }
     </style>
 </head>
 <body>
 
     <div id="map"></div>
     <div id="coord-hud">Hover over map for coords...</div>
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
-        // --- FOXHOLE WORLD CONSTANTS ---
+        // --- CONSTANTS ---
         const mapWidth = 1024;
         const mapHeight = 888;
-        const pixelWorldWidth = 10242;
-        const pixelWorldHeight = 6216;
+        const pixelWorldWidth = 10320; 
+        const pixelWorldHeight = 6213;
         const gridIntervalWidth = 768;
         const gridIntervalHeight = 444;
 
         const scale = 256 / Math.max(pixelWorldWidth, pixelWorldHeight);
-        const offset = Math.abs(pixelWorldWidth - pixelWorldHeight) / 2;
+        const offsetX = (pixelWorldWidth < pixelWorldHeight) ? (pixelWorldHeight - pixelWorldWidth) / 2 : 0;
+        const offsetY = (pixelWorldHeight < pixelWorldWidth) ? (pixelWorldWidth - pixelWorldHeight) / 2 : 0;
 
-        // Calculate world bounds for the map and images
-        const bottomRightLeaflet = L.latLng(
-            (pixelWorldHeight + (pixelWorldWidth > pixelWorldHeight ? offset : 0)) * scale * -1,
-            (pixelWorldWidth + (pixelWorldHeight > pixelWorldWidth ? offset : 0)) * scale
-        );
-        const worldBounds = [[0, 0], [bottomRightLeaflet.lat, bottomRightLeaflet.lng]];
+        const southWest = L.latLng((pixelWorldHeight + offsetY) * scale * -1, offsetX * scale);
+        const northEast = L.latLng(offsetY * scale * -1, (pixelWorldWidth + offsetX) * scale);
+        const worldBounds = L.latLngBounds(southWest, northEast);
 
         // --- MAP INIT ---
         const map = L.map('map', {
             crs: L.CRS.Simple,
             maxBounds: worldBounds,
-            center: [bottomRightLeaflet.lat / 2, bottomRightLeaflet.lng / 2], 
+            maxBoundsViscosity: 1.0,
+            center: worldBounds.getCenter(), 
             zoom: 3,
             minZoom: 2,
             maxZoom: 8
         });
 
-        // --- FULL LOCAL INDEX ---
         const localIndex = {
             "Allods Bight": { x: 8, y: 8 }, "Callahans Passage": { x: 6, y: 4 }, "Deadlands": { x: 6, y: 6 },
             "The Drowned Vale": { x: 7, y: 7 }, "Endless Shore": { x: 9, y: 7 }, "Farranac Coast": { x: 3, y: 5 },
@@ -95,22 +92,16 @@
             "Tyrant Foothills": { x: 11, y: 9 }, "Pipers Enclave": { x: 12, y: 8 }
         };
 
-        // --- COORDINATE PROJECTION ---
+        // --- FIXED PROJECTION ---
         function projectToLeaflet(regionName, localX, localY) {
             const cleanName = regionName.trim();
             const region = localIndex[cleanName];
             if (!region) return null;
 
-            const worldX = (gridIntervalWidth * region.x) + (mapWidth * localX);
-            const worldY = (gridIntervalHeight * region.y) + (mapHeight * localY);
-            
-            let finalX = worldX;
-            let finalY = worldY;
+            const worldX = (gridIntervalWidth * region.x) + (mapWidth * localX) + offsetX;
+            const worldY = (gridIntervalHeight * region.y) + (mapHeight * localY) + offsetY;
 
-            if (pixelWorldWidth > pixelWorldHeight) finalY += offset;
-            else finalX += offset;
-
-            return L.latLng(finalY * scale * -1, finalX * scale);
+            return L.latLng(worldY * scale * -1, worldX * scale);
         }
 
         const layers = {
@@ -123,7 +114,7 @@
 
         L.control.layers(null, layers, { collapsed: false }).addTo(map);
 
-        // --- LOAD MARKER DATA ---
+        // --- LOAD DATA ---
         fetch('https://opensheet.elk.sh/1nZR543Dekzy_7fpX6oUgXFnQD2WTOPCdngZ14i0GtFg/Points')
             .then(res => res.json())
             .then(data => {
@@ -131,7 +122,6 @@
                     const region = row.HEX || row.OTHER;
                     const lX = parseFloat(row.Longitude);
                     const lY = parseFloat(row.Latitude);
-
                     if (!region || isNaN(lX) || isNaN(lY)) return;
 
                     const coords = projectToLeaflet(region, lX, lY);
@@ -148,13 +138,11 @@
                         iconAnchor: [size[0] / 2, size[1] / 2]
                     });
 
-                    const content = `
+                    const m = L.marker(coords, { icon: icon }).bindPopup(`
                         <div class="popup-header">${row.Name || "Unknown"}</div>
                         <div class="popup-data">${row.Description || ""}</div>
                         <div class="popup-footer">${row.UPDATE || ""}</div>
-                    `;
-
-                    const m = L.marker(coords, { icon: icon }).bindPopup(content);
+                    `);
 
                     const g = (row.Group || "").toUpperCase();
                     if (g.includes("ROCKET")) layers["Rockets"].addLayer(m);
@@ -165,65 +153,37 @@
                 });
             });
 
-        // --- LOAD BACKGROUND OVERLAYS ---
+        // --- LOAD OVERLAYS ---
         fetch("https://opensheet.elk.sh/1nZR543Dekzy_7fpX6oUgXFnQD2WTOPCdngZ14i0GtFg/Map_Overlays")
             .then(res => res.json())
             .then(data => {
                 data.forEach(row => {
-                    if (row.image_url) {
-                        L.imageOverlay(row.image_url, worldBounds).addTo(map);
-                    }
+                    if (row.image_url) L.imageOverlay(row.image_url, worldBounds).addTo(map);
                 });
                 map.fitBounds(worldBounds);
             });
 
+        // --- COORDINATE HELPER ---
+        const hud = document.getElementById('coord-hud');
+        map.on('mousemove', function(e) {
+            const worldX = e.latlng.lng / scale - offsetX;
+            const worldY = (e.latlng.lat / (scale * -1)) - offsetY;
 
+            const gridX = Math.floor(worldX / gridIntervalWidth);
+            const gridY = Math.floor(worldY / gridIntervalHeight);
 
-// --- COORDINATE HELPER LOGIC ---
-const hud = document.getElementById('coord-hud');
+            let regionName = "Ocean";
+            for (const [name, coords] of Object.entries(localIndex)) {
+                if (coords.x === gridX && coords.y === gridY) { regionName = name; break; }
+            }
 
-map.on('mousemove', function(e) {
-    const lat = e.latlng.lat;
-    const lng = e.latlng.lng;
+            const localX = ((worldX - (gridX * gridIntervalWidth)) / mapWidth).toFixed(4);
+            const localY = ((worldY - (gridY * gridIntervalHeight)) / mapHeight).toFixed(4);
 
-    // 1. Convert Leaflet LatLng back to World Pixels
-    const worldX = lng / scale - (pixelWorldWidth < pixelWorldHeight ? offset : 0);
-    const worldY = (lat / (scale * -1)) - (pixelWorldHeight < pixelWorldWidth ? offset : 0);
-
-    // 2. Determine which Grid Hex we are in
-    const gridX = Math.floor(worldX / gridIntervalWidth);
-    const gridY = Math.floor(worldY / gridIntervalHeight);
-
-    // 3. Find Region Name by matching Grid X/Y
-    let regionName = "Ocean / Unknown";
-    for (const [name, coords] of Object.entries(localIndex)) {
-        if (coords.x === gridX && coords.y === gridY) {
-            regionName = name;
-            break;
-        }
-    }
-
-    // 4. Calculate Local 0-1 Coordinates
-    const localX = ((worldX - (gridX * gridIntervalWidth)) / mapWidth).toFixed(4);
-    const localY = ((worldY - (gridY * gridIntervalHeight)) / mapHeight).toFixed(4);
-
-    // 5. Update HUD
-    if (worldX < 0 || worldY < 0 || worldX > pixelWorldWidth || worldY > pixelWorldHeight) {
-        hud.innerHTML = "OUT OF BOUNDS";
-    } else {
-        hud.innerHTML = `
-            <strong>REGION:</strong> ${regionName}<br>
-            <strong>LAT (Y):</strong> ${localY}<br>
-            <strong>LONG (X):</strong> ${localX}
-        `;
-    }
-});
-
-// Click to log/copy coordinates
-map.on('click', function(e) {
-    console.log("Coordinate Helper:", hud.innerText.replace(/\n/g, " | "));
-});
-        
+            hud.innerHTML = (worldX < 0 || worldY < 0 || worldX > pixelWorldWidth || worldY > pixelWorldHeight) 
+                ? "OUT OF BOUNDS" 
+                : `<strong>REGION:</strong> ${regionName}<br><strong>LAT (Y):</strong> ${localY}<br><strong>LONG (X):</strong> ${localX}`;
+        });
     </script>
 </body>
 </html>
