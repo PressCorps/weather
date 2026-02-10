@@ -5,125 +5,159 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PressCorps Weather Map</title>
     
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-      <!-- Leaflet CSS -->
-
-
-
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
     <style>
-        body { margin: 0; padding: 0; background-color: #222; }
+        body { margin: 0; padding: 0; background-color: #222; font-family: sans-serif; }
         #map { height: 100vh; width: 100vw; background: #1a1a1a; }
         
-        /* Popup Styling */
-        .leaflet-popup-content-wrapper { background: #2b2b2b; color: #eee; }
+        /* Dark Theme Popup */
+        .leaflet-popup-content-wrapper { background: #2b2b2b; color: #eee; border: 1px solid #444; border-radius: 4px; }
         .leaflet-popup-tip { background: #2b2b2b; }
-        .popup-header { font-size: 1.1em; font-weight: bold; color: #ff9f43; margin-bottom: 5px; }
-        .popup-data { margin: 5px 0; font-size: 0.9em; }
-        .popup-link { display: block; margin-top: 8px; color: #54a0ff; text-decoration: none; }
-        #map { width: 100%; height: 100vh; }
+        .popup-header { font-size: 1.1em; font-weight: bold; color: #ff9f43; margin-bottom: 5px; border-bottom: 1px solid #444; padding-bottom: 3px; }
+        .popup-data { margin: 8px 0; font-size: 0.9em; line-height: 1.4; color: #ccc; }
+        .popup-footer { font-size: 0.7em; color: #777; margin-top: 10px; font-style: italic; }
+
+        /* Dark Theme Layer Control */
+        .leaflet-control-layers { background: #2b2b2b !important; color: #eee !important; border: none !important; padding: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
+        .leaflet-control-layers-overlays label { margin-bottom: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div id="map"></div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    
     <script>
-// --- Custom Foxhole CRS ---
-// Transformation(a, b, c, d) where:
-// x_map = a*x_data + b
-// y_map = c*y_data + d
-// We set 'c' to 1 (instead of -1) to make Y increase downwards.
-const MyCRS = L.extend({}, L.CRS.Simple, {
-    transformation: new L.Transformation(1, 0, 1, 0) 
-});
+        // --- FOXHOLE WORLD CONSTANTS ---
+        const mapWidth = 1024;
+        const mapHeight = 888;
+        const pixelWorldWidth = 10242;
+        const pixelWorldHeight = 6216;
+        const gridIntervalWidth = 768;
+        const gridIntervalHeight = 444;
 
-const map = L.map('map', {
-    crs: MyCRS,
-    center: [0.5, 0.5], // Center of the 0,0 to 1,1 square
-    zoom: 9,
-    minZoom: 8,
-    maxZoom: 13
-});
+        // --- FULL LOCAL INDEX (FoxholeStats Grid Mapping) ---
+        const localIndex = {
+            "Allods Bight": { x: 8, y: 8 }, "Callahans Passage": { x: 6, y: 4 }, "Deadlands": { x: 6, y: 6 },
+            "The Drowned Vale": { x: 7, y: 7 }, "Endless Shore": { x: 9, y: 7 }, "Farranac Coast": { x: 3, y: 5 },
+            "Fishermans Row": { x: 2, y: 6 }, "Godcrofts": { x: 10, y: 4 }, "Great March": { x: 6, y: 10 },
+            "The Heartlands": { x: 5, y: 9 }, "The Linn of Mercy": { x: 5, y: 5 }, "Loch Mór": { x: 5, y: 7 },
+            "Marban Hollow": { x: 7, y: 5 }, "The Moors": { x: 5, y: 3 }, "Oarbreaker Isles": { x: 1, y: 7 },
+            "Reaching Trail": { x: 6, y: 2 }, "Shackled Chasm": { x: 7, y: 9 }, "Stonecradle": { x: 4, y: 4 },
+            "Tempest Island": { x: 10, y: 6 }, "Umbral Wildwood": { x: 6, y: 8 }, "Viper Pit": { x: 7, y: 3 },
+            "Weathered Expanse": { x: 8, y: 4 }, "Westgate": { x: 3, y: 7 }, "Acrithia": { x: 7, y: 11 },
+            "Ash Fields": { x: 4, y: 10 }, "Basin Sionnach": { x: 6, y: 0 }, "Callums Cape": { x: 4, y: 2 },
+            "Clanshead Valley": { x: 8, y: 2 }, "Howl County": { x: 7, y: 1 }, "Kalokai": { x: 6, y: 12 },
+            "Morgens Crossing": { x: 9, y: 3 }, "Nevish Line": { x: 3, y: 3 }, "Origin": { x: 3, y: 9 },
+            "Red River": { x: 5, y: 11 }, "Speaking Woods": { x: 5, y: 1 }, "Terminus": { x: 8, y: 10 },
+            "The Fingers": { x: 11, y: 7 }, "Sableport": { x: 4, y: 8 }, "Kings Cage": { x: 4, y: 6 },
+            "Reavers Pass": { x: 9, y: 9 }, "Stema Landing": { x: 2, y: 8 }, "Stlican Shelf": { x: 9, y: 5 },
+            "The Clahstra": { x: 8, y: 6 }, "Olavis Wake": { x: 0, y: 4 }, "Pari Peak": { x: 1, y: 3 },
+            "Palantine Berm": { x: 1, y: 5 }, "Kuura Strand": { x: 2, y: 2 }, "The Gutter": { x: 2, y: 4 },
+            "Wresta": { x: 10, y: 8 }, "Onyx": { x: 10, y: 10 }, "Lykos Isle": { x: 11, y: 5 },
+            "Tyrant Foothills": { x: 11, y: 9 }, "Pipers Enclave": { x: 12, y: 8 }
+        };
 
-// Define the bounds where 0,0 is top-left and 1,1 is bottom-right
-const bounds = [[0, 0], [1, 1]];
+        // --- COORDINATE PROJECTION ---
+        function projectToLeaflet(regionName, localX, localY) {
+            const cleanName = regionName.trim();
+            const region = localIndex[cleanName];
+            if (!region) return null;
 
-// --- MARKER GROUPS (Filter Toggles) ---
-const layers = {
-    "Rockets": L.layerGroup().addTo(map),
-    "Weather": L.layerGroup().addTo(map),
-    "Day Info": L.layerGroup().addTo(map),
-    "Regions": L.layerGroup().addTo(map),
-    "Other": L.layerGroup().addTo(map)
-};
+            const worldX = (gridIntervalWidth * region.x) + (mapWidth * localX);
+            const worldY = (gridIntervalHeight * region.y) + (mapHeight * localY);
 
-L.control.layers(null, layers, { collapsed: false }).addTo(map);
-
-const dataUrl = 'https://opensheet.elk.sh/1nZR543Dekzy_7fpX6oUgXFnQD2WTOPCdngZ14i0GtFg/Points';
-
-function loadMarkers() {
-    fetch(dataUrl)
-        .then(res => res.json())
-        .then(data => {
-            data.forEach(row => {
-                // In Foxhole JSON: Latitude is usually Y, Longitude is usually X
-                const lat = parseFloat(row.Latitude); 
-                const lng = parseFloat(row.Longitude);
-
-                // Validation
-                if (isNaN(lat) || isNaN(lng)) return;
-
-                // Handle Sizing
-                let iconSize = [32, 32];
-                if (row["Custom Size"] && row["Custom Size"].includes('x')) {
-                    iconSize = row["Custom Size"].split('x').map(Number);
-                }
-
-                const customIcon = L.icon({
-                    iconUrl: row["Marker Icon"] || "https://unpkg.com/leaflet/dist/images/marker-icon.png",
-                    iconSize: iconSize,
-                    iconAnchor: [iconSize[0] / 2, iconSize[1] / 2],
-                    popupAnchor: [0, -iconSize[1] / 2]
-                });
-
-                const popupContent = `
-                    <div class="popup-header">${row.Name || "Unnamed"}</div>
-                    <div class="popup-data">${row.Description || "No description."}</div>
-                    <div style="font-size: 0.7em; color: #888; margin-top: 5px;">${row.UPDATE || ""}</div>
-                `;
-
-                // Add marker: [Y, X] in Leaflet matches [Latitude, Longitude]
-                const m = L.marker([lat, lng], { icon: customIcon }).bindPopup(popupContent);
-
-                // Group Logic
-                const group = row.Group ? row.Group.toUpperCase() : "";
-                if (group === "ROCKET") layers["Rockets"].addLayer(m);
-                else if (group === "WEATHER") layers["Weather"].addLayer(m);
-                else if (group === "DAY") layers["Day Info"].addLayer(m);
-                else if (group === "REGION NAME") layers["Regions"].addLayer(m);
-                else layers["Other"].addLayer(m);
-            });
-        });
-}
-
-// Load Overlays (Ensure images also use the 0,0 to 1,1 bounds)
-fetch("https://opensheet.elk.sh/1nZR543Dekzy_7fpX6oUgXFnQD2WTOPCdngZ14i0GtFg/Map_Overlays")
-    .then(res => res.json())
-    .then(data => {
-        data.forEach(row => {
-            if (row.image_url) {
-                L.imageOverlay(row.image_url, bounds).addTo(map);
-            }
-        });
-        map.fitBounds(bounds);
-        loadMarkers(); // Load markers after map bounds are set
-    });
-
+            const scale = 256 / Math.max(pixelWorldWidth, pixelWorldHeight);
+            const offset = Math.abs(pixelWorldWidth - pixelWorldHeight) / 2;
             
-        
+            let finalX = worldX;
+            let finalY = worldY;
+
+            if (pixelWorldWidth > pixelWorldHeight) finalY += offset;
+            else finalX += offset;
+
+            return L.latLng(finalY * scale * -1, finalX * scale);
+        }
+
+        // --- MAP INIT ---
+        const map = L.map('map', {
+            crs: L.CRS.Simple,
+            center: [-80, 120], 
+            zoom: 3,
+            minZoom: 2,
+            maxZoom: 8
+        });
+
+        const layers = {
+            "Rockets": L.layerGroup().addTo(map),
+            "Weather": L.layerGroup().addTo(map),
+            "Day Info": L.layerGroup().addTo(map),
+            "Regions": L.layerGroup().addTo(map),
+            "Other": L.layerGroup().addTo(map)
+        };
+
+        L.control.layers(null, layers, { collapsed: false }).addTo(map);
+
+        const dataUrl = 'https://opensheet.elk.sh/1nZR543Dekzy_7fpX6oUgXFnQD2WTOPCdngZ14i0GtFg/Points';
+
+        // --- LOAD DATA ---
+        fetch(dataUrl)
+            .then(res => res.json())
+            .then(data => {
+                data.forEach(row => {
+                    const region = row.HEX || row.OTHER;
+                    const lX = parseFloat(row.Longitude);
+                    const lY = parseFloat(row.Latitude);
+
+                    if (!region || isNaN(lX) || isNaN(lY)) return;
+
+                    const coords = projectToLeaflet(region, lX, lY);
+                    if (!coords) return;
+
+                    // Icon setup
+                    let size = [32, 32];
+                    if (row["Custom Size"] && row["Custom Size"].includes('x')) {
+                        size = row["Custom Size"].split('x').map(Number);
+                    }
+
+                    const icon = L.icon({
+                        iconUrl: row["Marker Icon"] || "https://unpkg.com/leaflet/dist/images/marker-icon.png",
+                        iconSize: size,
+                        iconAnchor: [size[0] / 2, size[1] / 2]
+                    });
+
+                    // Popup Build
+                    const content = `
+                        <div class="popup-header">${row.Name || "Unknown"}</div>
+                        <div class="popup-data">${row.Description || ""}</div>
+                        <div class="popup-footer">${row.UPDATE || ""}</div>
+                    `;
+
+                    const m = L.marker(coords, { icon: icon }).bindPopup(content);
+
+                    // Layer Sort
+                    const g = (row.Group || "").toUpperCase();
+                    if (g.includes("ROCKET")) layers["Rockets"].addLayer(m);
+                    else if (g.includes("WEATHER")) layers["Weather"].addLayer(m);
+                    else if (g.includes("DAY")) layers["Day Info"].addLayer(m);
+                    else if (g.includes("REGION")) layers["Regions"].addLayer(m);
+                    else layers["Other"].addLayer(m);
+                });
+            });
+
+        // Load Background Overlays
+        fetch("https://opensheet.elk.sh/1nZR543Dekzy_7fpX6oUgXFnQD2WTOPCdngZ14i0GtFg/Map_Overlays")
+            .then(res => res.json())
+            .then(data => {
+                data.forEach(row => {
+                    if (row.image_url) {
+                        // Using a large arbitrary bound for the background images
+                        L.imageOverlay(row.image_url, [[0, 0], [-200, 250]]).addTo(map);
+                    }
+                });
+            });
     </script>
 </body>
 </html>
