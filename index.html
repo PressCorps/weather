@@ -8,45 +8,47 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <style>
-        body { margin: 0; padding: 0; background-color: #222; font-family: sans-serif; overflow: hidden; }
-        #map { height: 100vh; width: 100vw; background: #1a1a1a; }
+        body { margin: 0; padding: 0; background-color: #111; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; }
+        #map { height: 100vh; width: 100vw; background: #0a0a0a; }
         
-        /* Coordinate Helper HUD */
-        #coord-hud {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            z-index: 2000;
-            background: rgba(30, 30, 30, 0.9);
-            color: #ff9f43;
-            padding: 12px;
-            border: 1px solid #555;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            pointer-events: none;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-            font-size: 0.85rem;
-            line-height: 1.4;
+        /* Loading Overlay */
+        #loader {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 10, 10, 0.85); z-index: 9999;
+            display: flex; justify-content: center; align-items: center;
+            color: #ff9f43; font-size: 1.5rem; font-weight: bold; transition: opacity 0.5s;
         }
 
-        /* Leaflet Overrides */
-        .leaflet-popup-content-wrapper { background: #2b2b2b; color: #eee; border-radius: 4px; border: 1px solid #444; }
-        .leaflet-popup-tip { background: #2b2b2b; }
-        .popup-header { font-size: 1.1em; font-weight: bold; color: #ff9f43; border-bottom: 1px solid #444; margin-bottom: 5px; padding-bottom: 3px; }
-        .popup-data { margin: 8px 0; font-size: 0.9em; color: #ccc; }
-        .popup-footer { font-size: 0.75em; color: #777; font-style: italic; }
-        .leaflet-control-layers { background: #2b2b2b !important; color: #eee !important; border: none !important; }
+        /* Coordinate Helper HUD */
+        #coord-hud {
+            position: absolute; bottom: 20px; left: 20px; z-index: 2000;
+            background: rgba(20, 20, 20, 0.95); color: #ff9f43; padding: 15px;
+            border: 1px solid #444; border-radius: 6px; font-family: 'Courier New', monospace;
+            pointer-events: none; box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+            font-size: 0.9rem; line-height: 1.5; min-width: 200px;
+        }
+
+        /* Leaflet Popups & Controls */
+        .leaflet-popup-content-wrapper { background: #222; color: #f0f0f0; border: 1px solid #555; border-radius: 6px; }
+        .leaflet-popup-tip { background: #222; }
+        .popup-title { font-size: 1.2em; font-weight: bold; color: #ff9f43; border-bottom: 1px solid #444; margin-bottom: 8px; padding-bottom: 4px; }
+        .popup-desc { margin: 10px 0; font-size: 0.95em; color: #ddd; }
+        .popup-meta { font-size: 0.8em; color: #888; font-style: italic; text-align: right; }
+        .leaflet-control-layers { background: rgba(30, 30, 30, 0.9) !important; color: #fff !important; border: 1px solid #555 !important; border-radius: 6px !important; }
     </style>
 </head>
 <body>
 
+    <div id="loader">Establishing connection to PressCorps Uplink...</div>
     <div id="map"></div>
-    <div id="coord-hud">Initialize Map...</div>
+    <div id="coord-hud">Initializing API...</div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
-        // --- 1. CONFIGURATION & CONSTANTS ---
+        // ==========================================
+        // 1. FOXHOLE MAP CONSTANTS & MATH
+        // ==========================================
         const mapWidth = 1024;
         const mapHeight = 888;
         const pixelWorldWidth = 10320; 
@@ -54,7 +56,6 @@
         const gridIntervalWidth = 768;
         const gridIntervalHeight = 444;
 
-        // Scaling logic for CRS.Simple
         const scale = 256 / Math.max(pixelWorldWidth, pixelWorldHeight);
         const offsetX = (pixelWorldWidth < pixelWorldHeight) ? (pixelWorldHeight - pixelWorldWidth) / 2 : 0;
         const offsetY = (pixelWorldHeight < pixelWorldWidth) ? (pixelWorldWidth - pixelWorldHeight) / 2 : 0;
@@ -63,81 +64,101 @@
         const northEast = L.latLng(offsetY * scale * -1, (pixelWorldWidth + offsetX) * scale);
         const worldBounds = L.latLngBounds(southWest, northEast);
 
-        // --- 2. INITIALIZE MAP ---
-        const map = L.map('map', {
-            crs: L.CRS.Simple,
-            maxBounds: worldBounds,
-            maxBoundsViscosity: 1.0,
-            center: worldBounds.getCenter(), 
-            zoom: 3,
-            minZoom: 2,
-            maxZoom: 8,
-            attributionControl: false
-        });
-
-        // Create a custom pane to force background images under the markers
-        map.createPane('baseMapPane');
-        map.getPane('baseMapPane').style.zIndex = 150;
-
-        // --- 3. REGION INDEX ---
-        const localIndex = {
-            "Allods Bight": { x: 8, y: 8 }, "Callahans Passage": { x: 6, y: 4 }, "Deadlands": { x: 6, y: 6 },
-            "The Drowned Vale": { x: 7, y: 7 }, "Endless Shore": { x: 9, y: 7 }, "Farranac Coast": { x: 3, y: 5 },
-            "Fishermans Row": { x: 2, y: 6 }, "Godcrofts": { x: 10, y: 4 }, "Great March": { x: 6, y: 10 },
-            "The Heartlands": { x: 5, y: 9 }, "The Linn of Mercy": { x: 5, y: 5 }, "Loch Mór": { x: 5, y: 7 },
-            "Marban Hollow": { x: 7, y: 5 }, "The Moors": { x: 5, y: 3 }, "Oarbreaker Isles": { x: 1, y: 7 },
-            "Reaching Trail": { x: 6, y: 2 }, "Shackled Chasm": { x: 7, y: 9 }, "Stonecradle": { x: 4, y: 4 },
-            "Tempest Island": { x: 10, y: 6 }, "Umbral Wildwood": { x: 6, y: 8 }, "Viper Pit": { x: 7, y: 3 },
-            "Weathered Expanse": { x: 8, y: 4 }, "Westgate": { x: 3, y: 7 }, "Acrithia": { x: 7, y: 11 },
-            "Ash Fields": { x: 4, y: 10 }, "Basin Sionnach": { x: 6, y: 0 }, "Callums Cape": { x: 4, y: 2 },
-            "Clanshead Valley": { x: 8, y: 2 }, "Howl County": { x: 7, y: 1 }, "Kalokai": { x: 6, y: 12 },
-            "Morgens Crossing": { x: 9, y: 3 }, "Nevish Line": { x: 3, y: 3 }, "Origin": { x: 3, y: 9 },
-            "Red River": { x: 5, y: 11 }, "Speaking Woods": { x: 5, y: 1 }, "Terminus": { x: 8, y: 10 },
-            "The Fingers": { x: 11, y: 7 }, "Sableport": { x: 4, y: 8 }, "Kings Cage": { x: 4, y: 6 },
-            "Reavers Pass": { x: 9, y: 9 }, "Stema Landing": { x: 2, y: 8 }, "Stlican Shelf": { x: 9, y: 5 },
-            "The Clahstra": { x: 8, y: 6 }, "Olavis Wake": { x: 0, y: 4 }, "Pari Peak": { x: 1, y: 3 },
-            "Palantine Berm": { x: 1, y: 5 }, "Kuura Strand": { x: 2, y: 2 }, "The Gutter": { x: 2, y: 4 },
-            "Wresta": { x: 10, y: 8 }, "Onyx": { x: 10, y: 10 }, "Lykos Isle": { x: 11, y: 5 },
-            "Tyrant Foothills": { x: 11, y: 9 }, "Pipers Enclave": { x: 12, y: 8 }
+        // ==========================================
+        // 2. REGION DICTIONARY
+        // ==========================================
+        const regions = {
+            "Acrithia": { x: 7, y: 11 }, "Allods Bight": { x: 8, y: 8 }, "Ash Fields": { x: 4, y: 10 },
+            "Basin Sionnach": { x: 6, y: 0 }, "Callahans Passage": { x: 6, y: 4 }, "Callums Cape": { x: 4, y: 2 },
+            "Clanshead Valley": { x: 8, y: 2 }, "Deadlands": { x: 6, y: 6 }, "Endless Shore": { x: 9, y: 7 },
+            "Farranac Coast": { x: 3, y: 5 }, "Fishermans Row": { x: 2, y: 6 }, "Godcrofts": { x: 10, y: 4 },
+            "Great March": { x: 6, y: 10 }, "Howl County": { x: 7, y: 1 }, "Kalokai": { x: 6, y: 12 },
+            "Kings Cage": { x: 4, y: 6 }, "Kuura Strand": { x: 2, y: 2 }, "Loch Mór": { x: 5, y: 7 },
+            "Lykos Isle": { x: 11, y: 5 }, "Marban Hollow": { x: 7, y: 5 }, "Morgens Crossing": { x: 9, y: 3 },
+            "Nevish Line": { x: 3, y: 3 }, "Oarbreaker Isles": { x: 1, y: 7 }, "Olavis Wake": { x: 0, y: 4 },
+            "Onyx": { x: 10, y: 10 }, "Origin": { x: 3, y: 9 }, "Palantine Berm": { x: 1, y: 5 },
+            "Pari Peak": { x: 1, y: 3 }, "Pipers Enclave": { x: 12, y: 8 }, "Reaching Trail": { x: 6, y: 2 },
+            "Reavers Pass": { x: 9, y: 9 }, "Red River": { x: 5, y: 11 }, "Sableport": { x: 4, y: 8 },
+            "Shackled Chasm": { x: 7, y: 9 }, "Speaking Woods": { x: 5, y: 1 }, "Stema Landing": { x: 2, y: 8 },
+            "Stlican Shelf": { x: 9, y: 5 }, "Stonecradle": { x: 4, y: 4 }, "Tempest Island": { x: 10, y: 6 },
+            "Terminus": { x: 8, y: 10 }, "The Clahstra": { x: 8, y: 6 }, "The Drowned Vale": { x: 7, y: 7 },
+            "The Fingers": { x: 11, y: 7 }, "The Gutter": { x: 2, y: 4 }, "The Heartlands": { x: 5, y: 9 },
+            "The Linn of Mercy": { x: 5, y: 5 }, "The Moors": { x: 5, y: 3 }, "Tyrant Foothills": { x: 11, y: 9 },
+            "Umbral Wildwood": { x: 6, y: 8 }, "Viper Pit": { x: 7, y: 3 }, "Weathered Expanse": { x: 8, y: 4 },
+            "Westgate": { x: 3, y: 7 }, "Wresta": { x: 10, y: 8 }
         };
 
-        // --- 4. PROJECTION ENGINE ---
-        function projectToLeaflet(regionName, localX, localY) {
+        function getLeafletCoords(regionName, localX, localY) {
             const cleanName = regionName ? regionName.trim() : null;
-            const region = localIndex[cleanName];
+            const region = regions[cleanName];
             if (!region) return null;
 
-            // Calculate world pixel position
             const worldX = (gridIntervalWidth * region.x) + (mapWidth * localX) + offsetX;
             const worldY = (gridIntervalHeight * region.y) + (mapHeight * localY) + offsetY;
-
-            // Return inverted Y for Leaflet
             return L.latLng(worldY * scale * -1, worldX * scale);
         }
 
-        // --- 5. LAYERS ---
-        const layers = {
+        // ==========================================
+        // 3. MAP & PANE INITIALIZATION
+        // ==========================================
+        const map = L.map('map', {
+            crs: L.CRS.Simple, maxBounds: worldBounds, maxBoundsViscosity: 1.0,
+            center: worldBounds.getCenter(), zoom: 3, minZoom: 2, maxZoom: 8, attributionControl: false
+        });
+
+        // The absolute fix: Create a dedicated pane for overlays and DISABLE pointer events.
+        // This ensures overlays sit at z-index 200 (below markers at 600) and cannot block clicks.
+        map.createPane('weatherOverlays');
+        map.getPane('weatherOverlays').style.zIndex = 200;
+        map.getPane('weatherOverlays').style.pointerEvents = 'none';
+
+        // Create a custom pane just for markers to force them to the absolute top.
+        map.createPane('topMarkers');
+        map.getPane('topMarkers').style.zIndex = 800;
+
+        const layerGroups = {
             "Rockets": L.layerGroup().addTo(map),
             "Weather": L.layerGroup().addTo(map),
             "Day Info": L.layerGroup().addTo(map),
             "Regions": L.layerGroup().addTo(map),
             "Other": L.layerGroup().addTo(map)
         };
-        L.control.layers(null, layers, { collapsed: false }).addTo(map);
+        L.control.layers(null, layerGroups, { collapsed: false, position: 'topright' }).addTo(map);
 
-        // --- 6. DATA LOADING ---
-        // Markers
-        fetch('https://opensheet.elk.sh/1nZR543Dekzy_7fpX6oUgXFnQD2WTOPCdngZ14i0GtFg/Points')
-            .then(res => res.json())
-            .then(data => {
-                data.forEach(row => {
-                    const region = row.HEX || row.OTHER;
+        // ==========================================
+        // 4. ASYNC DATA LOADING
+        // ==========================================
+        async function buildMap() {
+            try {
+                const endpoints = [
+                    "https://opensheet.elk.sh/1nZR543Dekzy_7fpX6oUgXFnQD2WTOPCdngZ14i0GtFg/Map_Overlays",
+                    "https://opensheet.elk.sh/1nZR543Dekzy_7fpX6oUgXFnQD2WTOPCdngZ14i0GtFg/Points"
+                ];
+
+                // Fetch both APIs simultaneously
+                const [overlayRes, pointsRes] = await Promise.all(endpoints.map(url => fetch(url)));
+                const overlayData = await overlayRes.json();
+                const pointsData = await pointsRes.json();
+
+                // 1. Process Overlays First
+                overlayData.forEach(row => {
+                    if (row.image_url) {
+                        L.imageOverlay(row.image_url, worldBounds, { 
+                            pane: 'weatherOverlays', // Force to bottom pane
+                            interactive: false       // Extra safety to prevent click blocking
+                        }).addTo(map);
+                    }
+                });
+
+                // 2. Process Markers Second
+                pointsData.forEach(row => {
+                    const regionName = row.HEX || row.OTHER;
                     const lX = parseFloat(row.Longitude);
                     const lY = parseFloat(row.Latitude);
 
-                    if (!region || isNaN(lX) || isNaN(lY)) return;
+                    if (!regionName || isNaN(lX) || isNaN(lY)) return;
 
-                    const coords = projectToLeaflet(region, lX, lY);
+                    const coords = getLeafletCoords(regionName, lX, lY);
                     if (!coords) return;
 
                     let size = [32, 32];
@@ -147,39 +168,41 @@
 
                     const icon = L.icon({
                         iconUrl: row["Marker Icon"] || "https://unpkg.com/leaflet/dist/images/marker-icon.png",
-                        iconSize: size,
-                        iconAnchor: [size[0]/2, size[1]/2],
-                        popupAnchor: [0, -size[1]/2]
+                        iconSize: size, iconAnchor: [size[0]/2, size[1]/2], popupAnchor: [0, -size[1]/2]
                     });
 
-                    const m = L.marker(coords, { icon: icon }).bindPopup(`
-                        <div class="popup-header">${row.Name || "Point of Interest"}</div>
-                        <div class="popup-data">${row.Description || ""}</div>
-                        <div class="popup-footer">Last Updated: ${row.UPDATE || "Unknown"}</div>
+                    // Assign markers to the top layer pane
+                    const m = L.marker(coords, { icon: icon, pane: 'topMarkers' }).bindPopup(`
+                        <div class="popup-title">${row.Name || "Unknown Signal"}</div>
+                        <div class="popup-desc">${row.Description || "No data available."}</div>
+                        <div class="popup-meta">Updated: ${row.UPDATE || "Unknown"}</div>
                     `);
 
-                    const g = (row.Group || "").toUpperCase();
-                    if (g.includes("ROCKET")) layers["Rockets"].addLayer(m);
-                    else if (g.includes("WEATHER")) layers["Weather"].addLayer(m);
-                    else if (g.includes("DAY")) layers["Day Info"].addLayer(m);
-                    else if (g.includes("REGION")) layers["Regions"].addLayer(m);
-                    else layers["Other"].addLayer(m);
+                    // Sort into toggles
+                    const group = (row.Group || "").toUpperCase();
+                    if (group.includes("ROCKET")) layerGroups["Rockets"].addLayer(m);
+                    else if (group.includes("WEATHER")) layerGroups["Weather"].addLayer(m);
+                    else if (group.includes("DAY")) layerGroups["Day Info"].addLayer(m);
+                    else if (group.includes("REGION")) layerGroups["Regions"].addLayer(m);
+                    else layerGroups["Other"].addLayer(m);
                 });
-            });
 
-        // Background Images
-        fetch("https://opensheet.elk.sh/1nZR543Dekzy_7fpX6oUgXFnQD2WTOPCdngZ14i0GtFg/Map_Overlays")
-            .then(res => res.json())
-            .then(data => {
-                data.forEach(row => {
-                    if (row.image_url) {
-                        // Apply the custom pane here
-                        L.imageOverlay(row.image_url, worldBounds, { pane: 'baseMapPane' }).addTo(map);
-                    }
-                });
-            });
+                // Remove loading screen when done
+                document.getElementById('loader').style.opacity = '0';
+                setTimeout(() => document.getElementById('loader').remove(), 500);
 
-        // --- 7. COORDINATE HUD LOGIC ---
+            } catch (error) {
+                console.error("Map Data Failure:", error);
+                document.getElementById('loader').innerHTML = "ERROR: Failed to establish Uplink.";
+                document.getElementById('loader').style.color = "#ff4757";
+            }
+        }
+
+        buildMap(); // Execute the main function
+
+        // ==========================================
+        // 5. COORDINATE HUD
+        // ==========================================
         const hud = document.getElementById('coord-hud');
         map.on('mousemove', function(e) {
             const worldX = e.latlng.lng / scale - offsetX;
@@ -188,10 +211,10 @@
             const gridX = Math.floor(worldX / gridIntervalWidth);
             const gridY = Math.floor(worldY / gridIntervalHeight);
 
-            let regionName = "Ocean";
-            for (const [name, coords] of Object.entries(localIndex)) {
-                if (coords.x === gridX && coords.y === gridY) {
-                    regionName = name;
+            let currentRegion = "Open Ocean / Uncharted";
+            for (const [name, data] of Object.entries(regions)) {
+                if (data.x === gridX && data.y === gridY) {
+                    currentRegion = name;
                     break;
                 }
             }
@@ -200,9 +223,9 @@
             const localY = ((worldY - (gridY * gridIntervalHeight)) / mapHeight).toFixed(4);
 
             if (worldX < 0 || worldY < 0 || worldX > pixelWorldWidth || worldY > pixelWorldHeight) {
-                hud.innerHTML = "OUT OF BOUNDS";
+                hud.innerHTML = `<span style="color:#ff4757">OUT OF BOUNDS</span>`;
             } else {
-                hud.innerHTML = `<strong>REGION:</strong> ${regionName}<br><strong>LAT (Y):</strong> ${localY}<br><strong>LONG (X):</strong> ${localX}`;
+                hud.innerHTML = `<strong>HEX:</strong> ${currentRegion}<br><strong>LAT (Y):</strong> ${localY}<br><strong>LNG (X):</strong> ${localX}`;
             }
         });
     </script>
