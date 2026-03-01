@@ -103,7 +103,7 @@
         // ==========================================
         const map = L.map('map', {
             crs: L.CRS.Simple, maxBounds: worldBounds, maxBoundsViscosity: 1.0,
-            center: worldBounds.getCenter(), zoom: 3, minZoom: 2, maxZoom: 8, attributionControl: false
+            center: worldBounds.getCenter(), zoom: 3, minZoom: 2, maxZoom: 8, attributionControl: true
         });
 
         // The absolute fix: Create a dedicated pane for overlays and DISABLE pointer events.
