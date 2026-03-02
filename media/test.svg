@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="644" height="1379" viewBox="802 370 644 1379" style="background: #fdfdfd;">
+  <g id="green-cluster">
+    <path fill="green" fill-opacity="0.15" stroke="#404040" stroke-width="1" d="M1189 1214L1193 1227L1205 1228L1215 1215L1189 1214z" />
+    <path fill="green" fill-opacity="0.15" stroke="#404040" stroke-width="1" d="M1179 1232L1185 1232L1193 1227L1189 1214z" />
+    <path fill="green" fill-opacity="0.15" stroke="#404040" stroke-width="1" d="M1185 1232L1196 1237L1205 1231L1205 1228L1193 1227z" />
+    <path fill="green" fill-opacity="0.15" stroke="#404040" stroke-width="1" d="M1205 1231L1218 1253L1227 1236L1215 1215L1205 1228z" />
+    <path fill="green" fill-opacity="0.15" stroke="#404040" stroke-width="1" d="M1176 1236L1184 1249L1196 1241L1196 1237L1185 1232L1179 1232z" />
+    <path fill="green" fill-opacity="0.15" stroke="#404040" stroke-width="1" d="M1196 1241L1217 1255L1218 1253L1205 1231L1196 1237z" />
+    <path fill="green" fill-opacity="0.15" stroke="#404040" stroke-width="1" d="M1184 1249L1189 1259L1215 1259L1217 1255L1196 1241z" />
+    <path fill="none" stroke="black" stroke-opacity="0.4" stroke-width="3" d="M1176 1236L1189 1259L1215 1259L1227 1236L1215 1214L1189 1214z" />
+  </g>
+
+  <g id="blue-cluster">
+    <path fill="blue" fill-opacity="0.15" stroke="#404040" stroke-width="1" d="M1111 1127L1120 1139L1130 1137L1137 1125L1112 1125z" />
+    <path fill="blue" fill-opacity="0.15" stroke="#404040" stroke-width="1" d="M1130 1137L1133 1141L1147 1142L1137 1125z" />
+    <path fill="blue" fill-opacity="0.15" stroke="#404040" stroke-width="1" d="M1099 1148L1102 1152L1119 1141L1120 1139L1111 1127L1099 1148z" />
+    <path fill="blue" fill-opacity="0.15" stroke="#404040" stroke-width="1" d="M1119 1141L1124 1149L1132 1150L1133 1141L1130 1137L1120 1139z" />
+    <path fill="blue" fill-opacity="0.15" stroke="#404040" stroke-width="1" d="M1132 1150L1148 1151L1151 1148L1147 1142L1133 1141z" />
+    <path fill="blue" fill-opacity="0.15" stroke="#404040" stroke-width="1" d="M1102 1152L1103 1154L1120 1153L1124 1149L1119 1141z" />
+    <path fill="blue" fill-opacity="0.15" stroke="#404040" stroke-width="1" d="M1120 1153L1122 1156L1130 1160L1132 1150L1124 1149z" />
+    <path fill="blue" fill-opacity="0.15" stroke="#404040" stroke-width="1" d="M1130 1160L1135 1170L1138 1170L1148 1151L1132 1150z" />
+    <path fill="blue" fill-opacity="0.15" stroke="#404040" stroke-width="1" d="M1103 1154L1112 1170L1122 1156L1120 1153z" />
+    <path fill="blue" fill-opacity="0.15" stroke="#404040" stroke-width="1" d="M1113 1170L1135 1170L1130 1160L1122 1156z" />
+    <path fill="none" stroke="black" stroke-opacity="0.4" stroke-width="3" d="M1099 1148L1112 1170L1138 1170L1151 1148L1138 1125L1112 1125z" />
+  </g>
+</svg>
