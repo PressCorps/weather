@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+1<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -88,16 +88,20 @@
             "Westgate": { x: 3, y: 7 }, "Wresta": { x: 10, y: 8 }
         };
 
-        function getLeafletCoords(regionName, localX, localY) {
-            const cleanName = regionName ? regionName.trim() : null;
-            const region = regions[cleanName];
-            if (!region) return null;
+    function getLeafletCoords(regionName, localX, localY) {
+        const cleanName = regionName ? regionName.trim() : null;
+        const region = regions[cleanName];
+        if (!region) return null;
 
-            const worldX = (gridIntervalWidth * region.x) + (mapWidth * localX) + offsetX;
-            const worldY = (gridIntervalHeight * region.y) + (mapHeight * localY) + offsetY;
-            return L.latLng(worldY * scale * -1, worldX * scale);
-        }
+        const mapPaddingX = 40; // Accounts for the 40px left-side padding in the map image
+        const mapPaddingY = 0;  // Vertical padding is negligible
 
+    // Add the padding to push the markers into alignment with the image
+        const worldX = mapPaddingX + (gridIntervalWidth * region.x) + (mapWidth * localX) + offsetX;
+        const worldY = mapPaddingY + (gridIntervalHeight * region.y) + (mapHeight * localY) + offsetY;
+    
+        return L.latLng(worldY * scale * -1, worldX * scale);
+    }
         // ==========================================
         // 3. MAP & PANE INITIALIZATION
         // ==========================================
@@ -203,31 +207,39 @@
         // ==========================================
         // 5. COORDINATE HUD
         // ==========================================
-        const hud = document.getElementById('coord-hud');
-        map.on('mousemove', function(e) {
-            const worldX = e.latlng.lng / scale - offsetX;
-            const worldY = (e.latlng.lat / (scale * -1)) - offsetY;
+map.on('mousemove', function(e) {
+    const worldX = e.latlng.lng / scale - offsetX;
+    const worldY = (e.latlng.lat / (scale * -1)) - offsetY;
 
-            const gridX = Math.floor(worldX / gridIntervalWidth);
-            const gridY = Math.floor(worldY / gridIntervalHeight);
+    const mapPaddingX = 40;
+    const mapPaddingY = 0;
 
-            let currentRegion = "Open Ocean / Uncharted";
-            for (const [name, data] of Object.entries(regions)) {
-                if (data.x === gridX && data.y === gridY) {
-                    currentRegion = name;
-                    break;
-                }
-            }
+    // Subtract the padding to get accurate grid calculations
+    const adjustedWorldX = worldX - mapPaddingX;
+    const adjustedWorldY = worldY - mapPaddingY;
 
-            const localX = ((worldX - (gridX * gridIntervalWidth)) / mapWidth).toFixed(4);
-            const localY = ((worldY - (gridY * gridIntervalHeight)) / mapHeight).toFixed(4);
+    const gridX = Math.floor(adjustedWorldX / gridIntervalWidth);
+    const gridY = Math.floor(adjustedWorldY / gridIntervalHeight);
 
-            if (worldX < 0 || worldY < 0 || worldX > pixelWorldWidth || worldY > pixelWorldHeight) {
-                hud.innerHTML = `<span style="color:#ff4757">OUT OF BOUNDS</span>`;
-            } else {
-                hud.innerHTML = `<strong>HEX:</strong> ${currentRegion}<br><strong>LAT (Y):</strong> ${localY}<br><strong>LNG (X):</strong> ${localX}`;
-            }
-        });
+    let currentRegion = "Open Ocean / Uncharted";
+    for (const [name, data] of Object.entries(regions)) {
+        if (data.x === gridX && data.y === gridY) {
+            currentRegion = name;
+            break;
+        }
+    }
+
+    const localX = ((adjustedWorldX - (gridX * gridIntervalWidth)) / mapWidth).toFixed(4);
+    const localY = ((adjustedWorldY - (gridY * gridIntervalHeight)) / mapHeight).toFixed(4);
+
+    if (adjustedWorldX < 0 || adjustedWorldY < 0 || adjustedWorldX > (pixelWorldWidth - 80) || adjustedWorldY > pixelWorldHeight) {
+        hud.innerHTML = `<span style="color:#ff4757">OUT OF BOUNDS</span>`;
+    } else {
+        hud.innerHTML = `<strong>HEX:</strong> ${currentRegion}<br><strong>LAT (Y):</strong> ${localY}<br><strong>LNG (X):</strong> ${localX}`;
+    }
+});
+
+        
     </script>
 </body>
 </html>
