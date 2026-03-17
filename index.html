@@ -207,6 +207,8 @@
         // ==========================================
         // 5. COORDINATE HUD
         // ==========================================
+const hud = document.getElementById('coord-hud');
+
 map.on('mousemove', function(e) {
     const worldX = e.latlng.lng / scale - offsetX;
     const worldY = (e.latlng.lat / (scale * -1)) - offsetY;
