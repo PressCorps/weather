@@ -1,8 +1,7 @@
 <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 514 312" width="514" height="312">
 	<style>
-		.s0 { fill: none;stroke: #404040;stroke-linecap: round;stroke-linejoin: round } 
+		.s0 { fill: none;stroke: #000000;stroke-linecap: round;stroke-linejoin: round } 
 		.s1 { fill: none;stroke: #000000;stroke-linecap: round;stroke-linejoin: round;stroke-width: 3 } 
-		.s2 { fill: none;stroke: #000000;stroke-linecap: round;stroke-linejoin: round } 
 	</style>
 	<g>
 		<g id="Folder 34">
@@ -449,151 +448,151 @@
 			<path fill-rule="evenodd" class="s1" d="m155 200l12 23h26l13-23-13-22h-26z"/>
 		</g>
 		<g id="Folder 16">
-			<path fill-rule="evenodd" class="s2" d="m163 141l8 6 11 3 9-16h-24z"/>
-			<path fill-rule="evenodd" class="s2" d="m182 150l1 2 21 2-11-20h-2z"/>
-			<path fill-rule="evenodd" class="s2" d="m155 156l5 9 8-3 3-15-8-6z"/>
-			<path fill-rule="evenodd" class="s2" d="m168 162l12-1 3-9-1-2-11-3z"/>
-			<path fill-rule="evenodd" class="s2" d="m181 160l21 2 4-6-2-2-21-2z"/>
-			<path fill-rule="evenodd" class="s2" d="m180 161l1 3 15 9 6-11-21-2z"/>
-			<path fill-rule="evenodd" class="s2" d="m160 165l7 13h10l4-14-1-3-12 1z"/>
-			<path fill-rule="evenodd" class="s2" d="m177 178h16l3-5-15-9z"/>
+			<path fill-rule="evenodd" class="s0" d="m163 141l8 6 11 3 9-16h-24z"/>
+			<path fill-rule="evenodd" class="s0" d="m182 150l1 2 21 2-11-20h-2z"/>
+			<path fill-rule="evenodd" class="s0" d="m155 156l5 9 8-3 3-15-8-6z"/>
+			<path fill-rule="evenodd" class="s0" d="m168 162l12-1 3-9-1-2-11-3z"/>
+			<path fill-rule="evenodd" class="s0" d="m181 160l21 2 4-6-2-2-21-2z"/>
+			<path fill-rule="evenodd" class="s0" d="m180 161l1 3 15 9 6-11-21-2z"/>
+			<path fill-rule="evenodd" class="s0" d="m160 165l7 13h10l4-14-1-3-12 1z"/>
+			<path fill-rule="evenodd" class="s0" d="m177 178h16l3-5-15-9z"/>
 			<path fill-rule="evenodd" class="s1" d="m155 156l12 22h26l13-22-13-22h-26z"/>
 		</g>
 		<g id="Folder 15">
-			<path fill-rule="evenodd" class="s2" d="m366 200l5 18 19-9-5-9z"/>
-			<path fill-rule="evenodd" class="s2" d="m352 214l19 4-5-18h-7z"/>
-			<path fill-rule="evenodd" class="s2" d="m347 223l5 10 5-1 15-10v-4l-20-4z"/>
-			<path fill-rule="evenodd" class="s2" d="m372 222l5 6 16 3 5-8-8-14-18 9z"/>
-			<path fill-rule="evenodd" class="s2" d="m357 232l16 6 4-10-5-6z"/>
-			<path fill-rule="evenodd" class="s2" d="m373 238l1 7h11l8-14-16-3z"/>
-			<path fill-rule="evenodd" class="s2" d="m352 233l7 12h15l-1-7-16-6z"/>
+			<path fill-rule="evenodd" class="s0" d="m366 200l5 18 19-9-5-9z"/>
+			<path fill-rule="evenodd" class="s0" d="m352 214l19 4-5-18h-7z"/>
+			<path fill-rule="evenodd" class="s0" d="m347 223l5 10 5-1 15-10v-4l-20-4z"/>
+			<path fill-rule="evenodd" class="s0" d="m372 222l5 6 16 3 5-8-8-14-18 9z"/>
+			<path fill-rule="evenodd" class="s0" d="m357 232l16 6 4-10-5-6z"/>
+			<path fill-rule="evenodd" class="s0" d="m373 238l1 7h11l8-14-16-3z"/>
+			<path fill-rule="evenodd" class="s0" d="m352 233l7 12h15l-1-7-16-6z"/>
 			<path fill-rule="evenodd" class="s1" d="m347 223l12 22h26l13-22-13-23h-26z"/>
 		</g>
 		<g id="Folder 14">
-			<path fill-rule="evenodd" class="s2" d="m100 178v15l20-7-4-8z"/>
-			<path fill-rule="evenodd" class="s2" d="m84 190l11 6 5-2v-16h-9z"/>
-			<path fill-rule="evenodd" class="s2" d="m100 194l9 6h3l11-10-3-4-20 7z"/>
-			<path fill-rule="evenodd" class="s2" d="m78 200l6 11 9-4 2-11-11-6z"/>
-			<path fill-rule="evenodd" class="s2" d="m93 207l9 2 7-9-9-6-5 2z"/>
-			<path fill-rule="evenodd" class="s2" d="m112 200l6 10 4 2 7-12-6-10z"/>
-			<path fill-rule="evenodd" class="s2" d="m102 209l2 2 14-1-6-10h-3z"/>
-			<path fill-rule="evenodd" class="s2" d="m84 211l7 12h13v-12l-2-2-9-2z"/>
-			<path fill-rule="evenodd" class="s2" d="m104 223h12l6-11-4-2-14 1z"/>
+			<path fill-rule="evenodd" class="s0" d="m100 178v15l20-7-4-8z"/>
+			<path fill-rule="evenodd" class="s0" d="m84 190l11 6 5-2v-16h-9z"/>
+			<path fill-rule="evenodd" class="s0" d="m100 194l9 6h3l11-10-3-4-20 7z"/>
+			<path fill-rule="evenodd" class="s0" d="m78 200l6 11 9-4 2-11-11-6z"/>
+			<path fill-rule="evenodd" class="s0" d="m93 207l9 2 7-9-9-6-5 2z"/>
+			<path fill-rule="evenodd" class="s0" d="m112 200l6 10 4 2 7-12-6-10z"/>
+			<path fill-rule="evenodd" class="s0" d="m102 209l2 2 14-1-6-10h-3z"/>
+			<path fill-rule="evenodd" class="s0" d="m84 211l7 12h13v-12l-2-2-9-2z"/>
+			<path fill-rule="evenodd" class="s0" d="m104 223h12l6-11-4-2-14 1z"/>
 			<path fill-rule="evenodd" class="s1" d="m78 200l13 23h25l13-23-13-22h-25z"/>
 		</g>
 		<g id="Folder 13">
-			<path fill-rule="evenodd" class="s2" d="m353 123l8 4 11-1 5-14h-18z"/>
-			<path fill-rule="evenodd" class="s2" d="m372 126l2 5 22 5 2-2-13-22h-8z"/>
-			<path fill-rule="evenodd" class="s2" d="m347 134l1 3 12-3 1-7-8-4z"/>
-			<path fill-rule="evenodd" class="s2" d="m360 134l6 4 4-1 4-6-2-5-11 1z"/>
-			<path fill-rule="evenodd" class="s2" d="m370 137l5 6h17l4-7-22-5z"/>
-			<path fill-rule="evenodd" class="s2" d="m348 137l4 7 12-3 2-3-6-4z"/>
-			<path fill-rule="evenodd" class="s2" d="m364 141l4 13 7-11-5-6-4 1z"/>
-			<path fill-rule="evenodd" class="s2" d="m352 144l7 12h8l1-2-4-13z"/>
-			<path fill-rule="evenodd" class="s2" d="m367 156h18l7-13h-17l-7 11z"/>
+			<path fill-rule="evenodd" class="s0" d="m353 123l8 4 11-1 5-14h-18z"/>
+			<path fill-rule="evenodd" class="s0" d="m372 126l2 5 22 5 2-2-13-22h-8z"/>
+			<path fill-rule="evenodd" class="s0" d="m347 134l1 3 12-3 1-7-8-4z"/>
+			<path fill-rule="evenodd" class="s0" d="m360 134l6 4 4-1 4-6-2-5-11 1z"/>
+			<path fill-rule="evenodd" class="s0" d="m370 137l5 6h17l4-7-22-5z"/>
+			<path fill-rule="evenodd" class="s0" d="m348 137l4 7 12-3 2-3-6-4z"/>
+			<path fill-rule="evenodd" class="s0" d="m364 141l4 13 7-11-5-6-4 1z"/>
+			<path fill-rule="evenodd" class="s0" d="m352 144l7 12h8l1-2-4-13z"/>
+			<path fill-rule="evenodd" class="s0" d="m367 156h18l7-13h-17l-7 11z"/>
 			<path fill-rule="evenodd" class="s1" d="m347 134l12 22h26l13-22-13-22h-26z"/>
 		</g>
 		<g id="Folder 12">
-			<path fill-rule="evenodd" class="s2" d="m329 134l5 16 3 1 13-11-3-6z"/>
-			<path fill-rule="evenodd" class="s2" d="m315 144l9 7 10-1-5-16h-8z"/>
-			<path fill-rule="evenodd" class="s2" d="m337 151l2 7 18 2 2-4-9-16z"/>
-			<path fill-rule="evenodd" class="s2" d="m308 156l5 8 10-4 1-9-9-7z"/>
-			<path fill-rule="evenodd" class="s2" d="m323 160l10 4 6-6-2-7h-13z"/>
-			<path fill-rule="evenodd" class="s2" d="m333 164l7 14h7l10-18-18-2z"/>
-			<path fill-rule="evenodd" class="s2" d="m313 164l5 9 15-8-10-5z"/>
-			<path fill-rule="evenodd" class="s2" d="m318 173l3 5h19l-7-13z"/>
+			<path fill-rule="evenodd" class="s0" d="m329 134l5 16 3 1 13-11-3-6z"/>
+			<path fill-rule="evenodd" class="s0" d="m315 144l9 7 10-1-5-16h-8z"/>
+			<path fill-rule="evenodd" class="s0" d="m337 151l2 7 18 2 2-4-9-16z"/>
+			<path fill-rule="evenodd" class="s0" d="m308 156l5 8 10-4 1-9-9-7z"/>
+			<path fill-rule="evenodd" class="s0" d="m323 160l10 4 6-6-2-7h-13z"/>
+			<path fill-rule="evenodd" class="s0" d="m333 164l7 14h7l10-18-18-2z"/>
+			<path fill-rule="evenodd" class="s0" d="m313 164l5 9 15-8-10-5z"/>
+			<path fill-rule="evenodd" class="s0" d="m318 173l3 5h19l-7-13z"/>
 			<path fill-rule="evenodd" class="s1" d="m308 156l13 22h26l12-22-12-22h-26z"/>
 		</g>
 		<g id="Folder 11">
-			<path fill-rule="evenodd" class="s2" d="m1 112l7 12 18-20 3-15h-15z"/>
-			<path fill-rule="evenodd" class="s2" d="m26 104l12 11h12l2-3-13-23h-10z"/>
-			<path fill-rule="evenodd" class="s2" d="m8 124l2 3 28-12-12-11z"/>
-			<path fill-rule="evenodd" class="s2" d="m10 127l4 7h25l11-19h-12z"/>
+			<path fill-rule="evenodd" class="s0" d="m1 112l7 12 18-20 3-15h-15z"/>
+			<path fill-rule="evenodd" class="s0" d="m26 104l12 11h12l2-3-13-23h-10z"/>
+			<path fill-rule="evenodd" class="s0" d="m8 124l2 3 28-12-12-11z"/>
+			<path fill-rule="evenodd" class="s0" d="m10 127l4 7h25l11-19h-12z"/>
 			<path fill-rule="evenodd" class="s1" d="m1 112l13 22h25l13-22-13-23h-25z"/>
 		</g>
 		<g id="Folder 10">
-			<path fill-rule="evenodd" class="s2" d="m70 67l5 25 13 1 3-4-13-22z"/>
-			<path fill-rule="evenodd" class="s2" d="m43 83l24 12 8-3-5-25h-18z"/>
-			<path fill-rule="evenodd" class="s2" d="m67 95v3l13 10 8-15-13-1z"/>
-			<path fill-rule="evenodd" class="s2" d="m39 89l13 23h7l8-14v-3l-24-12z"/>
-			<path fill-rule="evenodd" class="s2" d="m59 112h19l2-4-13-10z"/>
+			<path fill-rule="evenodd" class="s0" d="m70 67l5 25 13 1 3-4-13-22z"/>
+			<path fill-rule="evenodd" class="s0" d="m43 83l24 12 8-3-5-25h-18z"/>
+			<path fill-rule="evenodd" class="s0" d="m67 95v3l13 10 8-15-13-1z"/>
+			<path fill-rule="evenodd" class="s0" d="m39 89l13 23h7l8-14v-3l-24-12z"/>
+			<path fill-rule="evenodd" class="s0" d="m59 112h19l2-4-13-10z"/>
 			<path fill-rule="evenodd" class="s1" d="m39 89l13 23h26l13-23-13-22h-26z"/>
 		</g>
 		<g id="Folder 9">
-			<path fill-rule="evenodd" class="s2" d="m47 120l16 5 4-13h-15z"/>
-			<path fill-rule="evenodd" class="s2" d="m63 125l8 1 11-6-4-8h-11z"/>
-			<path fill-rule="evenodd" class="s2" d="m39 134l3 4 19-8 2-5-16-5z"/>
-			<path fill-rule="evenodd" class="s2" d="m71 126l8 13 6 4 6-9-9-14z"/>
-			<path fill-rule="evenodd" class="s2" d="m61 130l3 6 15 3-8-13-8-1z"/>
-			<path fill-rule="evenodd" class="s2" d="m42 138l9 16 13-18-3-6z"/>
-			<path fill-rule="evenodd" class="s2" d="m51 154l1 2h26l7-13-6-4-15-3z"/>
+			<path fill-rule="evenodd" class="s0" d="m47 120l16 5 4-13h-15z"/>
+			<path fill-rule="evenodd" class="s0" d="m63 125l8 1 11-6-4-8h-11z"/>
+			<path fill-rule="evenodd" class="s0" d="m39 134l3 4 19-8 2-5-16-5z"/>
+			<path fill-rule="evenodd" class="s0" d="m71 126l8 13 6 4 6-9-9-14z"/>
+			<path fill-rule="evenodd" class="s0" d="m61 130l3 6 15 3-8-13-8-1z"/>
+			<path fill-rule="evenodd" class="s0" d="m42 138l9 16 13-18-3-6z"/>
+			<path fill-rule="evenodd" class="s0" d="m51 154l1 2h26l7-13-6-4-15-3z"/>
 			<path fill-rule="evenodd" class="s1" d="m39 134l13 22h26l13-22-13-22h-26z"/>
 		</g>
 		<g id="Folder 8">
-			<path fill-rule="evenodd" class="s2" d="m83 58l11 3 16-9 3-7h-22z"/>
-			<path fill-rule="evenodd" class="s2" d="m94 61l3 4 12 3 1-16z"/>
-			<path fill-rule="evenodd" class="s2" d="m109 68l8 12 3 2 9-15-13-22h-3l-3 7z"/>
-			<path fill-rule="evenodd" class="s2" d="m78 67l6 11 8-3 5-10-3-4-11-3z"/>
-			<path fill-rule="evenodd" class="s2" d="m92 75l25 5-8-12-12-3z"/>
-			<path fill-rule="evenodd" class="s2" d="m84 78l7 11h25l4-7-3-2-25-5z"/>
+			<path fill-rule="evenodd" class="s0" d="m83 58l11 3 16-9 3-7h-22z"/>
+			<path fill-rule="evenodd" class="s0" d="m94 61l3 4 12 3 1-16z"/>
+			<path fill-rule="evenodd" class="s0" d="m109 68l8 12 3 2 9-15-13-22h-3l-3 7z"/>
+			<path fill-rule="evenodd" class="s0" d="m78 67l6 11 8-3 5-10-3-4-11-3z"/>
+			<path fill-rule="evenodd" class="s0" d="m92 75l25 5-8-12-12-3z"/>
+			<path fill-rule="evenodd" class="s0" d="m84 78l7 11h25l4-7-3-2-25-5z"/>
 			<path fill-rule="evenodd" class="s1" d="m78 67l13 22h25l13-22-13-22h-25z"/>
 		</g>
 		<g id="Folder 7">
-			<path fill-rule="evenodd" class="s2" d="m88 93l9 11h5v-15h-11z"/>
-			<path fill-rule="evenodd" class="s2" d="m102 104l2 1 18-5-6-11h-14z"/>
-			<path fill-rule="evenodd" class="s2" d="m81 106l8 1 8-3-9-11z"/>
-			<path fill-rule="evenodd" class="s2" d="m104 105v4l18 14 7-11-7-12z"/>
-			<path fill-rule="evenodd" class="s2" d="m89 107l6 11 9-9v-4l-7-1z"/>
-			<path fill-rule="evenodd" class="s2" d="m78 112l13 22 4-16-6-11-8-1z"/>
-			<path fill-rule="evenodd" class="s2" d="m91 134h25l6-11-18-14-9 9z"/>
+			<path fill-rule="evenodd" class="s0" d="m88 93l9 11h5v-15h-11z"/>
+			<path fill-rule="evenodd" class="s0" d="m102 104l2 1 18-5-6-11h-14z"/>
+			<path fill-rule="evenodd" class="s0" d="m81 106l8 1 8-3-9-11z"/>
+			<path fill-rule="evenodd" class="s0" d="m104 105v4l18 14 7-11-7-12z"/>
+			<path fill-rule="evenodd" class="s0" d="m89 107l6 11 9-9v-4l-7-1z"/>
+			<path fill-rule="evenodd" class="s0" d="m78 112l13 22 4-16-6-11-8-1z"/>
+			<path fill-rule="evenodd" class="s0" d="m91 134h25l6-11-18-14-9 9z"/>
 			<path fill-rule="evenodd" class="s1" d="m78 112l13 22h25l13-22-13-23h-25z"/>
 		</g>
 		<g id="Folder 5">
-			<path fill-rule="evenodd" class="s2" d="m399 178l8 14 6 4h9l9-4-8-14z"/>
-			<path fill-rule="evenodd" class="s2" d="m385 200l5 9 12-3 5-14-8-14z"/>
-			<path fill-rule="evenodd" class="s2" d="m422 196l2 13 6 3 6-12-5-8z"/>
-			<path fill-rule="evenodd" class="s2" d="m413 196l2 12 9 1-2-13z"/>
-			<path fill-rule="evenodd" class="s2" d="m402 206l9 4 4-2-2-12-6-4z"/>
-			<path fill-rule="evenodd" class="s2" d="m390 209l8 14h11l2-13-9-4z"/>
-			<path fill-rule="evenodd" class="s2" d="m409 223h14l7-11-6-3-9-1-4 2z"/>
+			<path fill-rule="evenodd" class="s0" d="m399 178l8 14 6 4h9l9-4-8-14z"/>
+			<path fill-rule="evenodd" class="s0" d="m385 200l5 9 12-3 5-14-8-14z"/>
+			<path fill-rule="evenodd" class="s0" d="m422 196l2 13 6 3 6-12-5-8z"/>
+			<path fill-rule="evenodd" class="s0" d="m413 196l2 12 9 1-2-13z"/>
+			<path fill-rule="evenodd" class="s0" d="m402 206l9 4 4-2-2-12-6-4z"/>
+			<path fill-rule="evenodd" class="s0" d="m390 209l8 14h11l2-13-9-4z"/>
+			<path fill-rule="evenodd" class="s0" d="m409 223h14l7-11-6-3-9-1-4 2z"/>
 			<path fill-rule="evenodd" class="s1" d="m385 200l13 23h25l13-23-13-22h-25z"/>
 		</g>
 		<g id="Folder 4">
-			<path fill-rule="evenodd" class="s2" d="m392 232l7 4 20-6 5-5-1-2h-25z"/>
-			<path fill-rule="evenodd" class="s2" d="m399 236l4 5 16 2v-13z"/>
-			<path fill-rule="evenodd" class="s2" d="m419 243l11 8h2l4-6-12-20-5 5z"/>
-			<path fill-rule="evenodd" class="s2" d="m403 241l1 14 26-4-11-8z"/>
-			<path fill-rule="evenodd" class="s2" d="m385 245l12 21 7-11-1-14-4-5-7-4z"/>
-			<path fill-rule="evenodd" class="s2" d="m397 266l26 1 9-16-28 4z"/>
+			<path fill-rule="evenodd" class="s0" d="m392 232l7 4 20-6 5-5-1-2h-25z"/>
+			<path fill-rule="evenodd" class="s0" d="m399 236l4 5 16 2v-13z"/>
+			<path fill-rule="evenodd" class="s0" d="m419 243l11 8h2l4-6-12-20-5 5z"/>
+			<path fill-rule="evenodd" class="s0" d="m403 241l1 14 26-4-11-8z"/>
+			<path fill-rule="evenodd" class="s0" d="m385 245l12 21 7-11-1-14-4-5-7-4z"/>
+			<path fill-rule="evenodd" class="s0" d="m397 266l26 1 9-16-28 4z"/>
 			<path fill-rule="evenodd" class="s1" d="m385 245l13 22h25l13-22-13-22h-25z"/>
 		</g>
 		<g id="Folder 3">
-			<path fill-rule="evenodd" class="s2" d="m430 121l16 4 5-13h-15z"/>
-			<path fill-rule="evenodd" class="s2" d="m446 125l3 3h4l9-16h-11z"/>
-			<path fill-rule="evenodd" class="s2" d="m453 128l20 9 2-3-13-22z"/>
-			<path fill-rule="evenodd" class="s2" d="m423 134l3 5 16 1 7-12-3-3-16-4z"/>
-			<path fill-rule="evenodd" class="s2" d="m442 140l5 6 24-10-18-8h-4z"/>
-			<path fill-rule="evenodd" class="s2" d="m426 139l10 17h11v-10l-5-6z"/>
-			<path fill-rule="evenodd" class="s2" d="m447 156h15l11-19-2-1-24 10z"/>
+			<path fill-rule="evenodd" class="s0" d="m430 121l16 4 5-13h-15z"/>
+			<path fill-rule="evenodd" class="s0" d="m446 125l3 3h4l9-16h-11z"/>
+			<path fill-rule="evenodd" class="s0" d="m453 128l20 9 2-3-13-22z"/>
+			<path fill-rule="evenodd" class="s0" d="m423 134l3 5 16 1 7-12-3-3-16-4z"/>
+			<path fill-rule="evenodd" class="s0" d="m442 140l5 6 24-10-18-8h-4z"/>
+			<path fill-rule="evenodd" class="s0" d="m426 139l10 17h11v-10l-5-6z"/>
+			<path fill-rule="evenodd" class="s0" d="m447 156h15l11-19-2-1-24 10z"/>
 			<path fill-rule="evenodd" class="s1" d="m423 134l13 22h26l13-22-13-22h-26z"/>
 		</g>
 		<g id="Folder 2">
-			<path fill-rule="evenodd" class="s2" d="m430 212l10 5 10-7 1-10h-15z"/>
-			<path fill-rule="evenodd" class="s2" d="m450 210l7 10 12-7-7-13h-11z"/>
-			<path fill-rule="evenodd" class="s2" d="m439 217l8 10 4-1 5-6-7-10z"/>
-			<path fill-rule="evenodd" class="s2" d="m423 223l7 11 18-7-8-10-10-5z"/>
-			<path fill-rule="evenodd" class="s2" d="m452 226l15 10 8-13-6-10-12 7z"/>
-			<path fill-rule="evenodd" class="s2" d="m448 227l1 18h13l5-9-15-10z"/>
-			<path fill-rule="evenodd" class="s2" d="m430 234l6 11h13l-1-18z"/>
+			<path fill-rule="evenodd" class="s0" d="m430 212l10 5 10-7 1-10h-15z"/>
+			<path fill-rule="evenodd" class="s0" d="m450 210l7 10 12-7-7-13h-11z"/>
+			<path fill-rule="evenodd" class="s0" d="m439 217l8 10 4-1 5-6-7-10z"/>
+			<path fill-rule="evenodd" class="s0" d="m423 223l7 11 18-7-8-10-10-5z"/>
+			<path fill-rule="evenodd" class="s0" d="m452 226l15 10 8-13-6-10-12 7z"/>
+			<path fill-rule="evenodd" class="s0" d="m448 227l1 18h13l5-9-15-10z"/>
+			<path fill-rule="evenodd" class="s0" d="m430 234l6 11h13l-1-18z"/>
 			<path fill-rule="evenodd" class="s1" d="m423 223l13 22h26l13-22-13-23h-26z"/>
 		</g>
 		<g id="Folder 1">
-			<path fill-rule="evenodd" class="s2" d="m465 195l11 3 19-11 6-7-1-2h-25z"/>
-			<path fill-rule="evenodd" class="s2" d="m476 198l8 8 4 1 7-20z"/>
-			<path fill-rule="evenodd" class="s2" d="m489 206l19 2 5-8-12-20-6 7z"/>
-			<path fill-rule="evenodd" class="s2" d="m462 200l9 16 13-10-8-8-11-3z"/>
-			<path fill-rule="evenodd" class="s2" d="m488 207l2 16h10l8-15-19-2z"/>
-			<path fill-rule="evenodd" class="s2" d="m471 216l4 7h15l-2-16-4-1z"/>
+			<path fill-rule="evenodd" class="s0" d="m465 195l11 3 19-11 6-7-1-2h-25z"/>
+			<path fill-rule="evenodd" class="s0" d="m476 198l8 8 4 1 7-20z"/>
+			<path fill-rule="evenodd" class="s0" d="m489 206l19 2 5-8-12-20-6 7z"/>
+			<path fill-rule="evenodd" class="s0" d="m462 200l9 16 13-10-8-8-11-3z"/>
+			<path fill-rule="evenodd" class="s0" d="m488 207l2 16h10l8-15-19-2z"/>
+			<path fill-rule="evenodd" class="s0" d="m471 216l4 7h15l-2-16-4-1z"/>
 			<path fill-rule="evenodd" class="s1" d="m462 200l13 23h25l13-23-13-22h-25z"/>
 		</g>
 	</g>
