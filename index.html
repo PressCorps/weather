@@ -121,10 +121,10 @@
         map.getPane('topMarkers').style.zIndex = 800;
 
         const layerGroups = {
-            "Rockets": L.layerGroup().addTo(map),
+            //"Rockets": L.layerGroup().addTo(map),
             "Weather": L.layerGroup().addTo(map),
-            "Day Info": L.layerGroup().addTo(map),
-            "Regions": L.layerGroup().addTo(map),
+            //"Day Info": L.layerGroup().addTo(map),
+            //"Regions": L.layerGroup().addTo(map),
             "Other": L.layerGroup().addTo(map)
         };
         L.control.layers(null, layerGroups, { collapsed: false, position: 'topright' }).addTo(map);
