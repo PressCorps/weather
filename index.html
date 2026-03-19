@@ -213,27 +213,59 @@ map.on('mousemove', function(e) {
     const worldX = e.latlng.lng / scale - offsetX;
     const worldY = (e.latlng.lat / (scale * -1)) - offsetY;
 
+    // The padding shift to align with the image margins
     const mapPaddingX = 40;
     const mapPaddingY = 0;
 
-    // Subtract the padding to get accurate grid calculations
     const adjustedWorldX = worldX - mapPaddingX;
     const adjustedWorldY = worldY - mapPaddingY;
 
-    const gridX = Math.floor(adjustedWorldX / gridIntervalWidth);
-    const gridY = Math.floor(adjustedWorldY / gridIntervalHeight);
-
     let currentRegion = "Open Ocean / Uncharted";
+    let activeRegionData = null;
+    let minDistanceSq = Infinity;
+
+    // 1. Find the closest hex center
     for (const [name, data] of Object.entries(regions)) {
-        if (data.x === gridX && data.y === gridY) {
+        // Calculate the true pixel center of the hex
+        const centerX = (gridIntervalWidth * data.x) + (mapWidth / 2);
+        const centerY = (gridIntervalHeight * data.y) + (mapHeight / 2);
+
+        // Calculate distance squared (faster than using Math.sqrt)
+        const dx = adjustedWorldX - centerX;
+        const dy = adjustedWorldY - centerY;
+        const distanceSq = (dx * dx) + (dy * dy);
+
+        if (distanceSq < minDistanceSq) {
+            minDistanceSq = distanceSq;
             currentRegion = name;
-            break;
+            activeRegionData = data;
         }
     }
 
-    const localX = ((adjustedWorldX - (gridX * gridIntervalWidth)) / mapWidth).toFixed(4);
-    const localY = ((adjustedWorldY - (gridY * gridIntervalHeight)) / mapHeight).toFixed(4);
+    // 2. The "Ocean" Check
+    // The maximum distance from the center to the point of a Foxhole hex is 512px.
+    // 512 squared is roughly 262,144. If the closest center is further than that, 
+    // the mouse is floating in the empty ocean outside the active map area.
+    if (minDistanceSq > 265000) {
+        currentRegion = "Open Ocean / Uncharted";
+        activeRegionData = null;
+    }
 
+    // 3. Calculate Local API Coordinates
+    let localX = "0.0000";
+    let localY = "0.0000";
+
+    if (activeRegionData) {
+        // Find the top-left mathematical origin of the current hex's bounding box
+        const hexOriginX = gridIntervalWidth * activeRegionData.x;
+        const hexOriginY = gridIntervalHeight * activeRegionData.y;
+
+        // Calculate where the mouse is relative to that origin
+        localX = ((adjustedWorldX - hexOriginX) / mapWidth).toFixed(4);
+        localY = ((adjustedWorldY - hexOriginY) / mapHeight).toFixed(4);
+    }
+
+    // 4. Update the HUD
     if (adjustedWorldX < 0 || adjustedWorldY < 0 || adjustedWorldX > (pixelWorldWidth - 80) || adjustedWorldY > pixelWorldHeight) {
         hud.innerHTML = `<span style="color:#ff4757">OUT OF BOUNDS</span>`;
     } else {
