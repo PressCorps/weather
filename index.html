@@ -1,4 +1,4 @@
-1<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -18,7 +18,6 @@
             display: flex; justify-content: center; align-items: center;
             color: #ff9f43; font-size: 1.5rem; font-weight: bold; transition: opacity 0.5s;
         }
-
         /* Coordinate Helper HUD */
         #coord-hud {
             position: absolute; bottom: 20px; left: 20px; z-index: 2000;
@@ -27,24 +26,21 @@
             pointer-events: none; box-shadow: 0 4px 15px rgba(0,0,0,0.8);
             font-size: 0.9rem; line-height: 1.5; min-width: 200px;
         }
-
         /* Leaflet Popups & Controls */
         .leaflet-popup-content-wrapper { background: #222; color: #f0f0f0; border: 1px solid #555; border-radius: 6px; }
         .leaflet-popup-tip { background: #222; }
         .popup-title { font-size: 1.2em; font-weight: bold; color: #ff9f43; border-bottom: 1px solid #444; margin-bottom: 8px; padding-bottom: 4px; }
         .popup-desc { margin: 10px 0; font-size: 0.95em; color: #ddd; }
         .popup-meta { font-size: 0.8em; color: #888; font-style: italic; text-align: right; }
+        .popup-day-update { font-size: 0.85em; color: #aaa; margin-top: 6px; }
         .leaflet-control-layers { background: rgba(30, 30, 30, 0.9) !important; color: #fff !important; border: 1px solid #555 !important; border-radius: 6px !important; }
     </style>
 </head>
 <body>
-
     <div id="loader">Establishing connection to PressCorps Uplink...</div>
     <div id="map"></div>
     <div id="coord-hud">Initializing API...</div>
-
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
     <script>
         // ==========================================
         // 1. FOXHOLE MAP CONSTANTS & MATH
@@ -55,15 +51,12 @@
         const pixelWorldHeight = 6213;
         const gridIntervalWidth = 768;
         const gridIntervalHeight = 444;
-
         const scale = 256 / Math.max(pixelWorldWidth, pixelWorldHeight);
         const offsetX = (pixelWorldWidth < pixelWorldHeight) ? (pixelWorldHeight - pixelWorldWidth) / 2 : 0;
         const offsetY = (pixelWorldHeight < pixelWorldWidth) ? (pixelWorldWidth - pixelWorldHeight) / 2 : 0;
-
         const southWest = L.latLng((pixelWorldHeight + offsetY) * scale * -1, offsetX * scale);
         const northEast = L.latLng(offsetY * scale * -1, (pixelWorldWidth + offsetX) * scale);
         const worldBounds = L.latLngBounds(southWest, northEast);
-
         // ==========================================
         // 2. REGION DICTIONARY
         // ==========================================
@@ -87,15 +80,12 @@
             "Umbral Wildwood": { x: 6, y: 8 }, "Viper Pit": { x: 7, y: 3 }, "Weathered Expanse": { x: 8, y: 4 },
             "Westgate": { x: 3, y: 7 }, "Wresta": { x: 10, y: 8 }
         };
-
     function getLeafletCoords(regionName, localX, localY) {
         const cleanName = regionName ? regionName.trim() : null;
         const region = regions[cleanName];
         if (!region) return null;
-
         const mapPaddingX = 40; // Accounts for the 40px left-side padding in the map image
         const mapPaddingY = 0;  // Vertical padding is negligible
-
     // Add the padding to push the markers into alignment with the image
         const worldX = mapPaddingX + (gridIntervalWidth * region.x) + (mapWidth * localX) + offsetX;
         const worldY = mapPaddingY + (gridIntervalHeight * region.y) + (mapHeight * localY) + offsetY;
@@ -109,26 +99,20 @@
             crs: L.CRS.Simple, maxBounds: worldBounds,
             center: worldBounds.getCenter(), zoom: 3, minZoom: 2, maxZoom: 8, attributionControl: true
         });
-
         // The absolute fix: Create a dedicated pane for overlays and DISABLE pointer events.
         // This ensures overlays sit at z-index 200 (below markers at 600) and cannot block clicks.
         map.createPane('weatherOverlays');
         map.getPane('weatherOverlays').style.zIndex = 200;
         map.getPane('weatherOverlays').style.pointerEvents = 'none';
-
         // Create a custom pane just for markers to force them to the absolute top.
         map.createPane('topMarkers');
         map.getPane('topMarkers').style.zIndex = 800;
-
+        // Only Rockets and Weather layers remain
         const layerGroups = {
             "Rockets": L.layerGroup().addTo(map),
-            "Weather": L.layerGroup().addTo(map),
-            "Day Info": L.layerGroup().addTo(map),
-            "Regions": L.layerGroup().addTo(map),
-            "Other": L.layerGroup().addTo(map)
+            "Weather": L.layerGroup().addTo(map)
         };
         L.control.layers(null, layerGroups, { collapsed: false, position: 'topright' }).addTo(map);
-
         // ==========================================
         // 4. ASYNC DATA LOADING
         // ==========================================
@@ -138,12 +122,10 @@
                     "https://opensheet.elk.sh/1nZR543Dekzy_7fpX6oUgXFnQD2WTOPCdngZ14i0GtFg/Map_Overlays",
                     "https://opensheet.elk.sh/1nZR543Dekzy_7fpX6oUgXFnQD2WTOPCdngZ14i0GtFg/Points"
                 ];
-
                 // Fetch both APIs simultaneously
                 const [overlayRes, pointsRes] = await Promise.all(endpoints.map(url => fetch(url)));
                 const overlayData = await overlayRes.json();
                 const pointsData = await pointsRes.json();
-
                 // 1. Process Overlays First
                 overlayData.forEach(row => {
                     if (row.image_url) {
@@ -153,95 +135,86 @@
                         }).addTo(map);
                     }
                 });
-
                 // 2. Process Markers Second
                 pointsData.forEach(row => {
                     const regionName = row.HEX || row.OTHER;
                     const lX = parseFloat(row.Longitude);
                     const lY = parseFloat(row.Latitude);
-
                     if (!regionName || isNaN(lX) || isNaN(lY)) return;
-
                     const coords = getLeafletCoords(regionName, lX, lY);
                     if (!coords) return;
+
+                    const group = (row.Group || "").toUpperCase();
+
+                    // Skip Day Info, Regions, and Other groups entirely
+                    if (group.includes("DAY") || group.includes("REGION")) return;
+                    if (!group.includes("ROCKET") && !group.includes("WEATHER")) return;
 
                     let size = [32, 32];
                     if (row["Custom Size"] && row["Custom Size"].includes('x')) {
                         size = row["Custom Size"].split('x').map(Number);
                     }
-
                     const icon = L.icon({
                         iconUrl: row["Marker Icon"] || "https://unpkg.com/leaflet/dist/images/marker-icon.png",
                         iconSize: size, iconAnchor: [size[0]/2, size[1]/2], popupAnchor: [0, -size[1]/2]
                     });
 
+                    // Build Day Last Update line if available
+                    const dayLastUpdate = row["Day Last Update"] !== undefined && row["Day Last Update"] !== ""
+                        ? `<div class="popup-day-update">Day Last Update: ${row["Day Last Update"]}</div>`
+                        : "";
+
                     // Assign markers to the top layer pane
                     const m = L.marker(coords, { icon: icon, pane: 'topMarkers' }).bindPopup(`
                         <div class="popup-title">${row.Name || "Unknown Signal"}</div>
                         <div class="popup-desc">${row.Description || "No data available."}</div>
+                        ${dayLastUpdate}
                         <div class="popup-meta">Updated: ${row.UPDATE || "Unknown"}</div>
                     `);
-
-                    // Sort into toggles
-                    const group = (row.Group || "").toUpperCase();
+                    // Sort into toggles (only Rockets and Weather now)
                     if (group.includes("ROCKET")) layerGroups["Rockets"].addLayer(m);
                     else if (group.includes("WEATHER")) layerGroups["Weather"].addLayer(m);
-                    else if (group.includes("DAY")) layerGroups["Day Info"].addLayer(m);
-                    else if (group.includes("REGION")) layerGroups["Regions"].addLayer(m);
-                    else layerGroups["Other"].addLayer(m);
                 });
-
                 // Remove loading screen when done
                 document.getElementById('loader').style.opacity = '0';
                 setTimeout(() => document.getElementById('loader').remove(), 500);
-
             } catch (error) {
                 console.error("Map Data Failure:", error);
                 document.getElementById('loader').innerHTML = "ERROR: Failed to establish Uplink.";
                 document.getElementById('loader').style.color = "#ff4757";
             }
         }
-
         buildMap(); // Execute the main function
-
         // ==========================================
         // 5. COORDINATE HUD
         // ==========================================
 const hud = document.getElementById('coord-hud');
-
 map.on('mousemove', function(e) {
     const worldX = e.latlng.lng / scale - offsetX;
     const worldY = (e.latlng.lat / (scale * -1)) - offsetY;
-
     // The padding shift to align with the image margins
     const mapPaddingX = 40;
     const mapPaddingY = 0;
-
     const adjustedWorldX = worldX - mapPaddingX;
     const adjustedWorldY = worldY - mapPaddingY;
-
     let currentRegion = "Open Ocean / Uncharted";
     let activeRegionData = null;
     let minDistanceSq = Infinity;
-
     // 1. Find the closest hex center
     for (const [name, data] of Object.entries(regions)) {
         // Calculate the true pixel center of the hex
         const centerX = (gridIntervalWidth * data.x) + (mapWidth / 2);
         const centerY = (gridIntervalHeight * data.y) + (mapHeight / 2);
-
         // Calculate distance squared (faster than using Math.sqrt)
         const dx = adjustedWorldX - centerX;
         const dy = adjustedWorldY - centerY;
         const distanceSq = (dx * dx) + (dy * dy);
-
         if (distanceSq < minDistanceSq) {
             minDistanceSq = distanceSq;
             currentRegion = name;
             activeRegionData = data;
         }
     }
-
     // 2. The "Ocean" Check
     // The maximum distance from the center to the point of a Foxhole hex is 512px.
     // 512 squared is roughly 262,144. If the closest center is further than that, 
@@ -250,21 +223,17 @@ map.on('mousemove', function(e) {
         currentRegion = "Open Ocean / Uncharted";
         activeRegionData = null;
     }
-
     // 3. Calculate Local API Coordinates
     let localX = "0.0000";
     let localY = "0.0000";
-
     if (activeRegionData) {
         // Find the top-left mathematical origin of the current hex's bounding box
         const hexOriginX = gridIntervalWidth * activeRegionData.x;
         const hexOriginY = gridIntervalHeight * activeRegionData.y;
-
         // Calculate where the mouse is relative to that origin
         localX = ((adjustedWorldX - hexOriginX) / mapWidth).toFixed(4);
         localY = ((adjustedWorldY - hexOriginY) / mapHeight).toFixed(4);
     }
-
     // 4. Update the HUD
     if (adjustedWorldX < 0 || adjustedWorldY < 0 || adjustedWorldX > (pixelWorldWidth - 80) || adjustedWorldY > pixelWorldHeight) {
         hud.innerHTML = `<span style="color:#ff4757">OUT OF BOUNDS</span>`;
@@ -272,7 +241,6 @@ map.on('mousemove', function(e) {
         hud.innerHTML = `<strong>HEX:</strong> ${currentRegion}<br><strong>LAT (Y):</strong> ${localY}<br><strong>LNG (X):</strong> ${localX}`;
     }
 });
-
         
     </script>
 </body>
